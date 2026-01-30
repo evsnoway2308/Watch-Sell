@@ -49,7 +49,8 @@ export class LoginComponent {
           });
         },
         error: (err) => {
-          this.toastr.error('Sai tài khoản hoặc mật khẩu!');
+          const errorMessage = err.error?.message || 'Tài khoản hoặc mật khẩu không chính xác!';
+          this.toastr.error(errorMessage);
           console.error(err);
         }
       });

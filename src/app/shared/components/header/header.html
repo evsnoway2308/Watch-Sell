@@ -1,0 +1,56 @@
+<header class="header">
+  <div class="header-container">
+    <!-- Logo -->
+    <a routerLink="/" class="logo">
+      <i class="fas fa-store text-danger"></i>
+      <span>ShopDev<span class="text-danger">.</span></span>
+    </a>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+      <input type="text" placeholder="Tìm kiếm sản phẩm...">
+      <button><i class="fas fa-search"></i></button>
+    </div>
+
+    <!-- Actions -->
+    <div class="header-actions">
+      <!-- Cart -->
+      <a href="javascript:void(0)" class="action-btn">
+        <div class="icon-wrapper">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="badge">0</span>
+        </div>
+        <span class="label">Giỏ hàng</span>
+      </a>
+
+      <!-- User Account -->
+      <div class="user-account" *ngIf="user(); else loginParams">
+        <div class="action-btn" (click)="toggleDropdown()">
+          <div class="icon-wrapper">
+             <!-- Avatar placeholder if no avatar -->
+            <i class="fas fa-user-circle" *ngIf="!user()?.avatar"></i>
+            <img [src]="user()?.avatar" *ngIf="user()?.avatar" alt="Avatar" class="avatar-img">
+          </div>
+          <span class="label">{{ user()?.fullName || user()?.username }}</span>
+          <i class="fas fa-chevron-down small-icon"></i>
+        </div>
+
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" *ngIf="showDropdown">
+          <a routerLink="/profile" class="dropdown-item"><i class="fas fa-user"></i> Hồ sơ</a>
+          <a routerLink="/orders" class="dropdown-item"><i class="fas fa-box"></i> Đơn mua</a>
+          <div class="dropdown-divider"></div>
+          <a (click)="logout()" class="dropdown-item text-danger no-select"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+        </div>
+      </div>
+
+      <ng-template #loginParams>
+        <a routerLink="/login" class="action-btn login-btn">
+            <i class="fas fa-user"></i>
+            <span>Đăng ký/Đăng nhập</span>
+        </a>
+      </ng-template>
+
+    </div>
+  </div>
+</header>

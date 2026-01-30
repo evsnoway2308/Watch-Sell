@@ -28,7 +28,7 @@ export class AuthService {
   }
 
   login(credentials: any) {
-    return this.http.post<any>(`${this.apiUrl}/acces-token`, credentials).pipe(
+    return this.http.post<any>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.setItem('access_token', response.accessToken);
