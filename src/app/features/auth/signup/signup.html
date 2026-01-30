@@ -1,28 +1,40 @@
 <div class="register-wrapper">
   <div class="register-card">
-    
+
     <div class="card-header-custom">
       <h2>Đăng ký tài khoản</h2>
       <p>Bắt đầu mua sắm hoặc bán hàng ngay hôm nay.</p>
     </div>
 
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-      
+
       <div class="form-row">
         <div class="form-group half-width">
           <label>Tên đăng nhập</label>
           <div class="input-container">
             <span class="input-icon left"><i class="fas fa-user"></i></span>
-            <input type="text" class="form-input with-icon-left" formControlName="username" placeholder="Nhập tên đăng nhập">
+            <input type="text" class="form-input with-icon-left" formControlName="username"
+              placeholder="Nhập tên đăng nhập">
+          </div>
+          <div
+            *ngIf="registerForm.get('username')?.invalid && (registerForm.get('username')?.dirty || registerForm.get('username')?.touched)"
+            class="text-danger small mt-1">
+            <small *ngIf="registerForm.get('username')?.errors?.['required']" class="text-danger">Tên đăng nhập là bắt
+              buộc</small>
+            <small *ngIf="registerForm.get('username')?.errors?.['minlength']" class="text-danger">Tên đăng nhập phải ít
+              nhất 3 ký tự</small>
           </div>
         </div>
-        
+
         <div class="form-group half-width">
           <label>Họ và tên</label>
           <div class="input-container">
             <span class="input-icon left"><i class="fas fa-id-card"></i></span>
             <input type="text" class="form-input with-icon-left" formControlName="name" placeholder="Nhập họ và tên">
           </div>
+          <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-danger">
+            Họ và tên là bắt buộc
+          </small>
         </div>
       </div>
 
@@ -32,14 +44,23 @@
           <span class="input-icon left"><i class="fas fa-envelope"></i></span>
           <input type="email" class="form-input with-icon-left" formControlName="email" placeholder="Nhập email">
         </div>
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger small">
+          <div *ngIf="registerForm.get('email')?.errors?.['required']">Email là bắt buộc</div>
+          <div *ngIf="registerForm.get('email')?.errors?.['email']">Email không hợp lệ</div>
+        </div>
       </div>
 
       <div class="form-group">
         <label>Số điện thoại</label>
         <div class="input-container">
           <span class="input-icon left"><i class="fas fa-phone"></i></span>
-          <input type="text" class="form-input with-icon-left" formControlName="phonenumber" placeholder="Nhập số điện thoại  ">
+          <input type="text" class="form-input with-icon-left" formControlName="phonenumber"
+            placeholder="Nhập số điện thoại">
         </div>
+        <small *ngIf="registerForm.get('phonenumber')?.invalid && registerForm.get('phonenumber')?.touched"
+          class="text-danger">
+          Số điện thoại là bắt buộc
+        </small>
       </div>
 
       <div class="form-row">
@@ -47,14 +68,16 @@
           <label>Mật khẩu</label>
           <div class="input-container">
             <span class="input-icon left"><i class="fas fa-lock"></i></span>
-            <input 
-              [type]="showPassword ? 'text' : 'password'" 
-              class="form-input with-icon-left with-icon-right" 
-              formControlName="password" 
-              placeholder="Ít nhất 6 ký tự">
+            <input [type]="showPassword ? 'text' : 'password'" class="form-input with-icon-left with-icon-right"
+              formControlName="password" placeholder="Ít nhất 6 ký tự">
             <span class="input-icon right cursor-pointer" (click)="showPassword = !showPassword">
               <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
             </span>
+          </div>
+          <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+            class="text-danger small">
+            <div *ngIf="registerForm.get('password')?.errors?.['required']">Mật khẩu là bắt buộc</div>
+            <div *ngIf="registerForm.get('password')?.errors?.['minlength']">Mật khẩu phải ít nhất 8 ký tự</div>
           </div>
         </div>
 
@@ -62,29 +85,31 @@
           <label>Xác nhận mật khẩu</label>
           <div class="input-container">
             <span class="input-icon left"><i class="fas fa-redo"></i></span>
-            <input 
-              [type]="showConfirmPassword ? 'text' : 'password'" 
-              class="form-input with-icon-left with-icon-right" 
-              formControlName="confirmPassword" 
-              placeholder="Nhập lại mật khẩu">
-             <span class="input-icon right cursor-pointer" (click)="showConfirmPassword = !showConfirmPassword">
+            <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-input with-icon-left with-icon-right"
+              formControlName="confirmPassword" placeholder="Nhập lại mật khẩu">
+            <span class="input-icon right cursor-pointer" (click)="showConfirmPassword = !showConfirmPassword">
               <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
             </span>
           </div>
+          <small *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+            class="text-danger">
+            Vui lòng nhập lại mật khẩu
+          </small>
         </div>
       </div>
 
       <div class="terms-checkbox">
         <input type="checkbox" id="terms">
-        <label for="terms">Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo mật</a>.</label>
+        <label for="terms">Tôi đồng ý với <a href="#">Điều khoản dịch vụ</a> và <a href="#">Chính sách bảo
+            mật</a>.</label>
       </div>
 
-      <button type="submit" class="btn-register" [disabled]="registerForm.invalid">
+      <button type="submit" class="btn-register">
         Đăng ký <i class="fas fa-arrow-right"></i>
       </button>
 
     </form>
-    
+
     <div class="divider">
       <span>HOẶC ĐĂNG KÝ BẰNG</span>
     </div>

@@ -39,7 +39,7 @@ export class SignupComponent {
         return;
       }
 
-      this.authService.signUp(val).subscribe({
+      this.authService.signup(val).subscribe({
         next: (res) => {
           this.toastr.success('Đăng ký thành công! Hãy đăng nhập.');
           this.router.navigate(['/login']);
