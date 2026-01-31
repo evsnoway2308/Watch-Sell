@@ -19,10 +19,8 @@
           <div
             *ngIf="registerForm.get('username')?.invalid && (registerForm.get('username')?.dirty || registerForm.get('username')?.touched)"
             class="text-danger small mt-1">
-            <small *ngIf="registerForm.get('username')?.errors?.['required']" class="text-danger">Tên đăng nhập là bắt
-              buộc</small>
-            <small *ngIf="registerForm.get('username')?.errors?.['minlength']" class="text-danger">Tên đăng nhập phải ít
-              nhất 3 ký tự</small>
+            <div *ngIf="registerForm.get('username')?.errors?.['required']">Tên đăng nhập là bắt buộc</div>
+            <div *ngIf="registerForm.get('username')?.errors?.['minlength']">Tên đăng nhập phải ít nhất 3 ký tự</div>
           </div>
         </div>
 
@@ -32,9 +30,10 @@
             <span class="input-icon left"><i class="fas fa-id-card"></i></span>
             <input type="text" class="form-input with-icon-left" formControlName="name" placeholder="Nhập họ và tên">
           </div>
-          <small *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="text-danger">
+          <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+            class="text-danger small mt-1">
             Họ và tên là bắt buộc
-          </small>
+          </div>
         </div>
       </div>
 
@@ -44,7 +43,8 @@
           <span class="input-icon left"><i class="fas fa-envelope"></i></span>
           <input type="email" class="form-input with-icon-left" formControlName="email" placeholder="Nhập email">
         </div>
-        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="text-danger small">
+        <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+          class="text-danger small mt-1">
           <div *ngIf="registerForm.get('email')?.errors?.['required']">Email là bắt buộc</div>
           <div *ngIf="registerForm.get('email')?.errors?.['email']">Email không hợp lệ</div>
         </div>
@@ -57,10 +57,10 @@
           <input type="text" class="form-input with-icon-left" formControlName="phonenumber"
             placeholder="Nhập số điện thoại">
         </div>
-        <small *ngIf="registerForm.get('phonenumber')?.invalid && registerForm.get('phonenumber')?.touched"
-          class="text-danger">
+        <div *ngIf="registerForm.get('phonenumber')?.invalid && registerForm.get('phonenumber')?.touched"
+          class="text-danger small mt-1">
           Số điện thoại là bắt buộc
-        </small>
+        </div>
       </div>
 
       <div class="form-row">
@@ -69,13 +69,13 @@
           <div class="input-container">
             <span class="input-icon left"><i class="fas fa-lock"></i></span>
             <input [type]="showPassword ? 'text' : 'password'" class="form-input with-icon-left with-icon-right"
-              formControlName="password" placeholder="Ít nhất 6 ký tự">
+              formControlName="password" placeholder="Ít nhất 8 ký tự">
             <span class="input-icon right cursor-pointer" (click)="showPassword = !showPassword">
               <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
             </span>
           </div>
           <div *ngIf="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
-            class="text-danger small">
+            class="text-danger small mt-1">
             <div *ngIf="registerForm.get('password')?.errors?.['required']">Mật khẩu là bắt buộc</div>
             <div *ngIf="registerForm.get('password')?.errors?.['minlength']">Mật khẩu phải ít nhất 8 ký tự</div>
           </div>
@@ -91,10 +91,10 @@
               <i class="fas" [ngClass]="showConfirmPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
             </span>
           </div>
-          <small *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
-            class="text-danger">
+          <div *ngIf="registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched"
+            class="text-danger small mt-1">
             Vui lòng nhập lại mật khẩu
-          </small>
+          </div>
         </div>
       </div>
 
@@ -116,11 +116,9 @@
 
     <div class="social-login">
       <button type="button" class="btn-social">
-        <i class="fab fa-google text-danger"></i> Google
+        <i class="fab fa-google text-google"></i> Google
       </button>
-      <button type="button" class="btn-social">
-        <i class="fab fa-facebook text-primary"></i> Facebook
-      </button>
+
     </div>
 
     <div class="footer-link">

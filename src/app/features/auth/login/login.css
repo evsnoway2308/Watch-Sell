@@ -29,7 +29,8 @@
 .brand-icon {
   width: 48px;
   height: 48px;
-  background-color: #e3f2fd; /* Màu nền icon xanh nhạt */
+  background-color: #e3f2fd;
+  /* Màu nền icon xanh nhạt */
   color: #1565c0;
   border-radius: 12px;
   display: inline-flex;
@@ -72,14 +73,17 @@
 
 .form-input {
   width: 100%;
-  padding: 12px 40px 12px 16px; /* Padding phải lớn để tránh icon */
-  background-color: #f9fafb; /* Màu nền input xám nhạt */
+  padding: 12px 40px 12px 16px;
+  /* Padding phải lớn để tránh icon */
+  background-color: #f9fafb;
+  /* Màu nền input xám nhạt */
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   font-size: 14px;
   color: #1f2937;
   transition: all 0.2s;
-  box-sizing: border-box; /* Quan trọng để không bị vỡ layout */
+  box-sizing: border-box;
+  /* Quan trọng để không bị vỡ layout */
 }
 
 .form-input:focus {
@@ -119,7 +123,8 @@
 .btn-submit {
   width: 100%;
   padding: 12px;
-  background-color: #1d4ed8; /* Màu xanh đậm */
+  background-color: #1d4ed8;
+  /* Màu xanh đậm */
   color: white;
   border: none;
   border-radius: 8px;
@@ -212,6 +217,13 @@
   font-size: 13px;
   text-decoration: none;
 }
+
 .page-footer a:hover {
   color: #374151;
+}
+
+/* Helper Class for Google Icon */
+.text-google {
+  color: #DB4437;
+  /* Google Red */
 }

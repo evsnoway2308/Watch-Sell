@@ -4,7 +4,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #f3f4f6; /* Xám nhạt */
+  background-color: #f3f4f6;
+  /* Xám nhạt */
   font-family: 'Inter', sans-serif;
   padding: 40px 20px;
 }
@@ -13,7 +14,8 @@
 .register-card {
   background: #ffffff;
   width: 100%;
-  max-width: 600px; /* Rộng hơn login form một chút vì có 2 cột */
+  max-width: 600px;
+  /* Rộng hơn login form một chút vì có 2 cột */
   border-radius: 16px;
   padding: 40px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
@@ -88,7 +90,8 @@ label {
 
 .form-input:focus {
   outline: none;
-  border-color: #f97316; /* Màu cam khi focus */
+  border-color: #f97316;
+  /* Màu cam khi focus */
   background-color: #fff;
   box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
 }
@@ -133,7 +136,8 @@ label {
 .btn-register {
   width: 100%;
   padding: 14px;
-  background: linear-gradient(to right, #f97316, #ea580c); /* Gradient cam */
+  background: linear-gradient(to right, #f97316, #ea580c);
+  /* Gradient cam */
   color: white;
   border: none;
   border-radius: 8px;
@@ -224,7 +228,26 @@ label {
     flex-direction: column;
     gap: 0;
   }
+
   .register-card {
     padding: 24px;
   }
+}
+
+/* Helper Classes */
+.text-danger {
+  color: #dc2626;
+  /* Red-600 */
+}
+
+.small {
+  font-size: 13px;
+}
+
+.mt-1 {
+  margin-top: 4px;
+}
+
+.text-google {
+  color: #DB4437;
 }
