@@ -10,13 +10,13 @@
       <p>Đăng nhập để truy cập tài khoản</p>
     </div>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" autocomplete="off">
 
       <div class="form-group">
         <label for="username">Tên đăng nhập hoặc Email</label>
         <div class="input-container">
           <input type="text" id="username" class="form-input" formControlName="username"
-            placeholder="Nhập tên đăng nhập">
+            placeholder="Nhập tên đăng nhập" autocomplete="nope">
           <span class="input-icon">
             <i class="fas fa-user"></i>
           </span>
@@ -27,7 +27,7 @@
         <label for="password">Mật khẩu</label>
         <div class="input-container">
           <input [type]="showPassword ? 'text' : 'password'" id="password" class="form-input" formControlName="password"
-            placeholder="Nhập mật khẩu">
+            placeholder="Nhập mật khẩu" autocomplete="nope">
           <span class="input-icon cursor-pointer" (click)="showPassword = !showPassword">
             <i class="fas" [ngClass]="showPassword ? 'fa-eye-slash' : 'fa-eye'"></i>
           </span>
@@ -49,10 +49,10 @@
     </div>
 
     <div class="social-login">
-      <button type="button" class="btn-social" (click)="loginWithGoogle()">
-        <i class="fab fa-google text-google"></i> Google
+      <button type="button" class="btn-social btn-google" (click)="loginWithGoogle()">
+        <i class="fab fa-google"></i>
+        <span>Sign in with Google</span>
       </button>
-
     </div>
 
     <div class="footer-link">

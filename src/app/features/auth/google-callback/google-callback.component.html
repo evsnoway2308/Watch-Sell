@@ -1,0 +1,15 @@
+<div class="callback-container" *ngIf="errorMessage">
+
+    <!-- Error State Only -->
+    <div class="error-wrapper">
+        <div class="error-icon">
+            <i class="fas fa-exclamation-circle"></i>
+        </div>
+        <h2>Xác thực thất bại</h2>
+        <p class="error-message">{{ errorMessage }}</p>
+        <button class="btn-retry" (click)="retryLogin()">
+            <i class="fas fa-redo"></i> Thử lại
+        </button>
+    </div>
+
+</div>

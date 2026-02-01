@@ -9,8 +9,8 @@ import { CommonModule } from '@angular/common';
   selector: 'app-register',
   standalone: true,
   imports: [ReactiveFormsModule, CommonModule, RouterLink],
-  templateUrl: './signup.html', 
-  styleUrl: './signup.css'     
+  templateUrl: './signup.html',
+  styleUrl: './signup.css'
 })
 export class SignupComponent {
   private fb = inject(FormBuilder);
@@ -20,6 +20,7 @@ export class SignupComponent {
 
   showPassword = false;
   showConfirmPassword = false;
+
 
   registerForm = this.fb.group({
     username: ['', [Validators.required, Validators.minLength(3)]],
@@ -33,7 +34,7 @@ export class SignupComponent {
   onSubmit() {
     if (this.registerForm.valid) {
       const val = this.registerForm.value;
-      
+
       if (val.password !== val.confirmPassword) {
         this.toastr.error('Mật khẩu xác nhận không khớp!');
         return;
