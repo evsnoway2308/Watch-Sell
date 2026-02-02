@@ -177,47 +177,19 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: 10px;
   cursor: pointer;
   font-weight: 500;
   color: #374151;
-  transition: all 0.2s;
-  font-size: 15px;
+  transition: background 0.2s;
 }
 
 .btn-social:hover {
   background-color: #f9fafb;
-  border-color: #d1d5db;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-}
-
-.btn-social:active {
-  transform: scale(0.98);
-}
-
-/* Google Button Specific Styling */
-.btn-google {
-  border-color: #dadce0;
-}
-
-.btn-google:hover {
-  background-color: #f8f9fa;
-  border-color: #d2d4d8;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.btn-google i {
-  color: #4285f4;
-  font-size: 18px;
-}
-
-.btn-google span {
-  color: #3c4043;
-  font-weight: 500;
 }
 
 /* Footer Link (Create Account) */
@@ -254,4 +226,8 @@
 .text-google {
   color: #DB4437;
   /* Google Red */
+}
+
+.text-danger {
+  color: #dc2626;
 }
