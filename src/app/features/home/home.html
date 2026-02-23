@@ -1,17 +1,261 @@
-<div class="home-container">
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="hero-content">
-            <h1>Nơi mua sắm yêu thích của bạn với hàng ngàn sản phẩm chất lượng.</h1>
-            <button class="btn-primary">Mua sắm ngay</button>
-        </div>
-    </section>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
 
-    <!-- Featured Products Placeholder -->
-    <section class="featured-section">
-        <h2>Sản phẩm nổi bật</h2>
-        <div class="empty-state">
-            <p>Danh sách sản phẩm đang được cập nhật...</p>
+
+<!-- ========== HERO BANNER ========== -->
+<section class="hero">
+    <div class="hero-slides">
+        <div class="hero-slide" *ngFor="let slide of heroSlides; let i = index" [class.active]="currentSlide === i">
+            <div class="hero-bg" [style.background-image]="'url(' + slide.bg + ')'"></div>
+            <div class="hero-overlay"></div>
+            <div class="hero-content">
+                <span class="hero-tag">{{ slide.tag }}</span>
+                <h1 class="hero-title">{{ slide.title }}</h1>
+                <p class="hero-subtitle">{{ slide.subtitle }}</p>
+                <div class="hero-actions">
+                    <a href="#products" class="btn-primary">Khám Phá Ngay</a>
+                    <a href="#brands" class="btn-outline">Xem Thương Hiệu</a>
+                </div>
+            </div>
         </div>
-    </section>
-</div>
+    </div>
+
+    <!-- Slide dots -->
+    <div class="hero-dots">
+        <button *ngFor="let s of heroSlides; let i = index" class="dot" [class.active]="currentSlide === i"
+            (click)="setSlide(i)"></button>
+    </div>
+
+    <!-- Slide arrows -->
+    <button class="hero-arrow prev" (click)="prevSlide()">
+        <i class="fas fa-chevron-left"></i>
+    </button>
+    <button class="hero-arrow next" (click)="nextSlide()">
+        <i class="fas fa-chevron-right"></i>
+    </button>
+</section>
+<!-- ========== FEATURED PRODUCTS ========== -->
+<section class="products" id="products">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">Nổi Bật</span>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="product-tabs">
+            <button *ngFor="let tab of productTabs" class="tab-btn" [class.active]="activeTab === tab"
+                (click)="activeTab = tab">{{ tab }}</button>
+        </div>
+
+        <div class="products-grid">
+            <div class="product-card" *ngFor="let p of filteredProducts">
+                <div class="product-img-wrap">
+                    <img [src]="p.image" [alt]="p.name" loading="lazy">
+                    <div class="product-badges">
+                        <span class="badge-new" *ngIf="p.isNew">Mới</span>
+                        <span class="badge-sale" *ngIf="p.discount">-{{ p.discount }}%</span>
+                    </div>
+                    <div class="product-actions">
+                        <button class="action-btn" title="Yêu thích"><i class="fas fa-heart"></i></button>
+                        <button class="action-btn" title="Xem nhanh"><i class="fas fa-eye"></i></button>
+                        <button class="action-btn" title="So sánh"><i class="fas fa-balance-scale"></i></button>
+                    </div>
+                </div>
+                <div class="product-info">
+                    <span class="product-brand">{{ p.brand }}</span>
+                    <h3 class="product-name">{{ p.name }}</h3>
+                    <div class="product-rating">
+                        <span *ngFor="let s of [1,2,3,4,5]">
+                            <i class="fas fa-star" [class.filled]="s <= p.rating"></i>
+                        </span>
+                        <small>({{ p.reviews }})</small>
+                    </div>
+                    <div class="product-price">
+                        <span class="price-current">{{ p.price | currency:'VND':'symbol':'1.0-0' }}</span>
+                        <span class="price-old" *ngIf="p.oldPrice">{{ p.oldPrice | currency:'VND':'symbol':'1.0-0'
+                            }}</span>
+                    </div>
+                    <button class="btn-add-cart">
+                        <i class="fas fa-shopping-bag"></i> Thêm vào giỏ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="view-all-wrap">
+            <a href="#" class="btn-view-all">Xem Tất Cả Sản Phẩm <i class="fas fa-arrow-right"></i></a>
+        </div>
+    </div>
+</section>
+
+<!-- ========== PROMO BANNER ========== -->
+<section class="promo-banner">
+    <div class="promo-container">
+        <div class="promo-content">
+            <span class="promo-tag">Ưu Đãi Đặc Biệt</span>
+            <h2>Giảm Đến <span>40%</span> Cho Đơn Hàng Đầu Tiên</h2>
+            <p>Đăng ký tài khoản ngay hôm nay và nhận ngay voucher giảm giá đặc biệt cho lần mua đầu tiên của bạn.</p>
+            <div class="promo-actions">
+                <a routerLink="/register" class="btn-primary">Đăng Ký Ngay</a>
+                <div class="countdown">
+                    <div class="countdown-item">
+                        <span class="count-num">{{ countdown.hours | number:'2.0' }}</span>
+                        <span class="count-label">Giờ</span>
+                    </div>
+                    <span class="count-sep">:</span>
+                    <div class="countdown-item">
+                        <span class="count-num">{{ countdown.minutes | number:'2.0' }}</span>
+                        <span class="count-label">Phút</span>
+                    </div>
+                    <span class="count-sep">:</span>
+                    <div class="countdown-item">
+                        <span class="count-num">{{ countdown.seconds | number:'2.0' }}</span>
+                        <span class="count-label">Giây</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="promo-image">
+            <img src="https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=500&q=80"
+                alt="Luxury Watch Promotion">
+            <div class="promo-circle"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== BRANDS ========== -->
+<section class="brands" id="brands">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">Đối Tác</span>
+            <h2 class="section-title">Thương Hiệu Nổi Tiếng</h2>
+            <p class="section-desc">Chúng tôi là đại lý chính thức của các thương hiệu đồng hồ hàng đầu thế giới</p>
+        </div>
+        <div class="brands-track-wrap">
+            <div class="brands-track">
+                <div class="brand-logo" *ngFor="let b of brands">{{ b }}</div>
+                <!-- Duplicate for infinite scroll -->
+                <div class="brand-logo" *ngFor="let b of brands">{{ b }}</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== TESTIMONIALS ========== -->
+<section class="testimonials">
+    <div class="section-container">
+        <div class="section-header">
+            <span class="section-tag">Đánh Giá</span>
+            <h2 class="section-title">Khách Hàng Nói Gì?</h2>
+        </div>
+        <div class="testimonials-grid">
+            <div class="testimonial-card" *ngFor="let t of testimonials">
+                <div class="testimonial-stars">
+                    <i class="fas fa-star" *ngFor="let s of [1,2,3,4,5]"></i>
+                </div>
+                <p class="testimonial-text">"{{ t.text }}"</p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">{{ t.name[0] }}</div>
+                    <div>
+                        <strong>{{ t.name }}</strong>
+                        <span>{{ t.product }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ========== NEWSLETTER ========== -->
+<section class="newsletter">
+    <div class="newsletter-container">
+        <div class="newsletter-icon"><i class="fas fa-envelope-open-text"></i></div>
+        <h2>Đăng Ký Nhận Tin</h2>
+        <p>Nhận ngay thông tin về sản phẩm mới và ưu đãi độc quyền</p>
+        <form class="newsletter-form" (submit)="$event.preventDefault()">
+            <input type="email" placeholder="Nhập email của bạn..." required>
+            <button type="submit">Đăng Ký</button>
+        </form>
+    </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<footer class="footer" id="contact">
+    <div class="footer-container">
+        <div class="footer-brand">
+            <div class="footer-logo">
+                <i class="fas fa-clock"></i>
+                <span>LUXEWATCH</span>
+            </div>
+            <p>Chuyên cung cấp đồng hồ chính hãng, cao cấp với cam kết chất lượng và dịch vụ tốt nhất.</p>
+            <div class="footer-socials">
+                <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+
+        <div class="footer-links">
+            <h4>Sản Phẩm</h4>
+            <ul>
+                <li><a href="#">Đồng Hồ Nam</a></li>
+                <li><a href="#">Đồng Hồ Nữ</a></li>
+                <li><a href="#">Đồng Hồ Đôi</a></li>
+                <li><a href="#">Phụ Kiện</a></li>
+                <li><a href="#">Hàng Mới Về</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-links">
+            <h4>Hỗ Trợ</h4>
+            <ul>
+                <li><a href="#">Trung Tâm Trợ Giúp</a></li>
+                <li><a href="#">Chính Sách Bảo Hành</a></li>
+                <li><a href="#">Đổi Trả Hàng</a></li>
+                <li><a href="#">Hướng Dẫn Mua Hàng</a></li>
+                <li><a href="#">Liên Hệ</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-contact">
+            <h4>Liên Hệ</h4>
+            <div class="contact-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>123 Nguyễn Huệ, Q.1, TP.HCM</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-phone"></i>
+                <span>1800 1234 (Miễn phí)</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-envelope"></i>
+                <span>support&#64;luxewatch.vn</span>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-clock"></i>
+                <span>8:00 - 22:00 (Tất cả các ngày)</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-bottom">
+        <div class="footer-bottom-inner">
+            <p>&copy; 2025 LuxeWatch. Tất cả quyền được bảo lưu.</p>
+            <div class="footer-payments">
+                <i class="fab fa-cc-visa"></i>
+                <i class="fab fa-cc-mastercard"></i>
+                <i class="fab fa-cc-paypal"></i>
+                <i class="fas fa-money-bill-wave"></i>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Back to top -->
+<button class="back-to-top" [class.visible]="isScrolled" (click)="scrollToTop()">
+    <i class="fas fa-chevron-up"></i>
+</button>
