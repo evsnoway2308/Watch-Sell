@@ -1,6 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-//import { tokenInterceptor } from './core/interceptors/token.interceptor';
+import { tokenInterceptor } from './core/interceptors/token.interceptor';
 import { routes } from './app.routes';
 
 // 1. Import các thư viện HTTP cần thiết
@@ -17,28 +17,28 @@ registerLocaleData(localeVi);
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-        provideRouter(
+    provideRouter(
       routes,
       withInMemoryScrolling({
         scrollPositionRestoration: 'top',
         anchorScrolling: 'enabled'
       })
     ),
-    
+
 
     // 2. QUAN TRỌNG: Cung cấp HttpClient tại đây
     provideHttpClient(
       withFetch(), // Cần thiết cho SSR (Server Side Rendering)
 
-      //withInterceptors([tokenInterceptor]) // Gắn Interceptor tự động thêm Token
+      withInterceptors([tokenInterceptor]) // Gắn Interceptor tự động thêm Token
     ),
 
     provideClientHydration(withEventReplay()),
     provideAnimations(), // Cần cho Toastr
-    provideToastr({ 
-      timeOut: 3000, 
-      positionClass: 'toast-top-right', 
-      preventDuplicates: true 
+    provideToastr({
+      timeOut: 3000,
+      positionClass: 'toast-top-right',
+      preventDuplicates: true
     })
   ]
 };
