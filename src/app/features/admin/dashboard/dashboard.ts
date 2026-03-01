@@ -1,21 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { DashboardService } from '../../../core/services/dashboard.service';
+import { DashboardStats } from '../../../core/model/dashboard-stats.model';
 
 @Component({
-    selector: 'app-admin-dashboard',
-    standalone: true,
-    imports: [CommonModule],
-    template: `
+  selector: 'app-admin-dashboard',
+  standalone: true,
+  imports: [CommonModule],
+  template: `
     <div class="dashboard-container">
       <h1 class="page-title">Tổng quan hệ thống</h1>
       
-      <div class="stats-grid">
+      <div class="stats-grid" *ngIf="stats">
         <div class="stat-card">
           <div class="stat-icon products">📦</div>
           <div class="stat-info">
             <h3>Sản phẩm</h3>
-            <p class="number">128</p>
-            <p class="trend up">↑ 12% so với tháng trước</p>
+            <p class="number">{{ stats.totalProducts | number }}</p>
+            <p class="trend up">Tất cả sản phẩm</p>
           </div>
         </div>
         
@@ -23,8 +25,8 @@ import { CommonModule } from '@angular/common';
           <div class="stat-icon orders">🛒</div>
           <div class="stat-info">
             <h3>Đơn hàng</h3>
-            <p class="number">45</p>
-            <p class="trend up">↑ 8% so với tháng trước</p>
+            <p class="number">{{ stats.totalOrders | number }}</p>
+            <p class="trend up">Tổng số đơn hàng</p>
           </div>
         </div>
         
@@ -32,8 +34,8 @@ import { CommonModule } from '@angular/common';
           <div class="stat-icon users">👥</div>
           <div class="stat-info">
             <h3>Khách hàng</h3>
-            <p class="number">1,240</p>
-            <p class="trend up">↑ 5% so với tháng trước</p>
+            <p class="number">{{ stats.totalUsers | number }}</p>
+            <p class="trend up">Người dùng hệ thống</p>
           </div>
         </div>
         
@@ -41,23 +43,28 @@ import { CommonModule } from '@angular/common';
           <div class="stat-icon revenue">💰</div>
           <div class="stat-info">
             <h3>Doanh thu</h3>
-            <p class="number">85M VNĐ</p>
-            <p class="trend up">↑ 15% so với tháng trước</p>
+            <p class="number">{{ stats.totalRevenue | number }} VNĐ</p>
+            <p class="trend up">Tổng doanh thu</p>
           </div>
         </div>
       </div>
 
-      <div class="dashboard-grid">
+      <div class="dashboard-grid" *ngIf="stats">
         <div class="chart-section card">
           <h3>Sản phẩm mới cập nhật</h3>
           <div class="recent-list">
-            <div class="recent-item" *ngFor="let i of [1,2,3,4]">
-              <div class="item-img"></div>
-              <div class="item-info">
-                <p class="item-name">Rolex Submariner Gold</p>
-                <p class="item-date">2 giờ trước</p>
+            <div class="recent-item" *ngFor="let product of stats.recentProducts">
+              <div class="item-img">
+                <img [src]="product.imageUrl" *ngIf="product.imageUrl" alt="Product">
               </div>
-              <span class="item-price">12,500,000 VNĐ</span>
+              <div class="item-info">
+                <p class="item-name">{{ product.name }}</p>
+                <p class="item-date">{{ product.categoryName }}</p>
+              </div>
+              <span class="item-price">{{ product.price | number }} VNĐ</span>
+            </div>
+            <div *ngIf="stats.recentProducts.length === 0" class="empty-state">
+              Chưa có sản phẩm nào.
             </div>
           </div>
         </div>
@@ -74,19 +81,32 @@ import { CommonModule } from '@angular/common';
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let i of [1,2,3,4]">
-                <td>#ORD-8821</td>
-                <td>Nguyen Van A</td>
-                <td><span class="badge success">Đã giao</span></td>
-                <td>8,500,000 VNĐ</td>
+              <tr *ngFor="let order of stats.recentOrders">
+                <td>#ORD-{{ order.id }}</td>
+                <td>{{ order.customerName }}</td>
+                <td>
+                  <span class="badge" [ngClass]="{
+                    'success': order.status === 'DELIVERED' || order.status === 'PAID',
+                    'warning': order.status === 'PENDING',
+                    'danger': order.status === 'CANCELLED'
+                  }">{{ order.status }}</span>
+                </td>
+                <td>{{ order.totalAmount | number }} VNĐ</td>
+              </tr>
+              <tr *ngIf="stats.recentOrders.length === 0">
+                <td colspan="4" class="empty-state">Chưa có đơn hàng nào.</td>
               </tr>
             </tbody>
           </table>
         </div>
       </div>
+
+      <div *ngIf="!stats" class="loading-state">
+        Đang tải dữ liệu tổng quan...
+      </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .dashboard-container {
       display: flex;
       flex-direction: column;
@@ -190,6 +210,13 @@ import { CommonModule } from '@angular/common';
       height: 40px;
       background: #f1f5f9;
       border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .item-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .item-info {
@@ -241,6 +268,15 @@ import { CommonModule } from '@angular/common';
     }
 
     .badge.success { background: #f0fdf4; color: #16a34a; }
+    .badge.warning { background: #fffbeb; color: #d97706; }
+    .badge.danger { background: #fef2f2; color: #dc2626; }
+
+    .loading-state, .empty-state {
+      padding: 2rem;
+      text-align: center;
+      color: #64748b;
+      font-size: 0.875rem;
+    }
 
     @media (max-width: 1024px) {
       .dashboard-grid {
@@ -249,4 +285,19 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class AdminDashboardComponent { }
+export class AdminDashboardComponent implements OnInit {
+  stats?: DashboardStats;
+
+  constructor(private dashboardService: DashboardService) { }
+
+  ngOnInit(): void {
+    this.loadDashboardStats();
+  }
+
+  loadDashboardStats(): void {
+    this.dashboardService.getStats().subscribe({
+      next: (data) => this.stats = data,
+      error: (err) => console.error('Error fetching dashboard stats:', err)
+    });
+  }
+}

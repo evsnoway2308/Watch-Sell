@@ -42,12 +42,14 @@ export class AdminProductListComponent implements OnInit, OnDestroy {
 
     loadProducts(): void {
         this.isLoading = true;
+        console.log('Fetching products - Page:', this.currentPage, 'Size:', this.pageSize);
         this.productService.getProducts(this.currentPage, this.pageSize).subscribe({
             next: (page: Page<ProductResponse>) => {
                 this.products = page.content;
                 this.totalPages = page.totalPages;
                 this.totalElements = page.totalElements;
                 this.isLoading = false;
+                console.log('Products loaded:', this.products.length);
             },
             error: (err) => {
                 console.error('Error fetching products for admin:', err);
@@ -75,9 +77,22 @@ export class AdminProductListComponent implements OnInit, OnDestroy {
     }
 
     deleteProduct(id: number): void {
+        console.log('Delete button clicked for product ID:', id);
         if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
-            console.log('Delete product:', id);
-            // TODO: Implement delete in ProductService
+            this.isLoading = true;
+            console.log('Confirm deletion for ID:', id);
+            this.productService.deleteProduct(id).subscribe({
+                next: () => {
+                    console.log('Delete successful for ID:', id);
+                    alert('Xóa sản phẩm thành công!');
+                    this.loadProducts();
+                },
+                error: (err) => {
+                    console.error('Error deleting product:', err);
+                    alert('Có lỗi xảy ra khi xóa sản phẩm.');
+                    this.isLoading = false;
+                }
+            });
         }
     }
 

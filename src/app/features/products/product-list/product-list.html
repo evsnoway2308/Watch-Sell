@@ -1,0 +1,67 @@
+<div class="product-list-container">
+    <div class="list-header">
+        <div class="header-content">
+            <h1 class="category-title">{{ categoryName }}</h1>
+            <p class="product-count">{{ totalElements }} sản phẩm được tìm thấy</p>
+        </div>
+    </div>
+
+    <div class="list-content">
+        <!-- Loading State -->
+        <div *ngIf="isLoading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Đang tải sản phẩm...</p>
+        </div>
+
+        <!-- Product Grid -->
+        <div *ngIf="!isLoading && products.length > 0" class="product-grid">
+            <a *ngFor="let product of products" class="product-card" [routerLink]="['/products', product.id]">
+                <div class="product-image">
+                    <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name">
+                    <div *ngIf="!product.available || product.stock === 0" class="badge out-of-stock">Hết hàng</div>
+                </div>
+                <div class="product-info">
+                    <span class="category">{{ product.categoryName }}</span>
+                    <h3 class="name">{{ product.name }}</h3>
+                    <div class="rating">
+                        <div class="stars">
+                            <i *ngFor="let star of [1,2,3,4,5]" class="star"
+                                [class.filled]="star <= product.averageRating">★</i>
+                        </div>
+                        <span class="reviews">({{ product.reviewCount || 0 }})</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!isLoading && products.length === 0" class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>Không tìm thấy sản phẩm nào</h3>
+            <p>Thử quay lại hoặc chọn danh mục khác.</p>
+            <a routerLink="/" class="btn-primary">Quay lại trang chủ</a>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="totalPages > 1" class="pagination">
+            <button class="page-btn" [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <div class="page-numbers">
+                <button *ngFor="let page of getPages()" class="page-number" [class.active]="page === currentPage"
+                    (click)="onPageChange(page)">
+                    {{ page + 1 }}
+                </button>
+            </div>
+
+            <button class="page-btn" [disabled]="currentPage === totalPages - 1"
+                (click)="onPageChange(currentPage + 1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>

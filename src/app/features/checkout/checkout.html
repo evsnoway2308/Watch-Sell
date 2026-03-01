@@ -1,0 +1,101 @@
+<div class="checkout-container">
+    <div class="checkout-header">
+        <h1>Thanh toán</h1>
+        <nav>
+            <a routerLink="/cart">Giỏ hàng</a> / <span>Thanh toán</span>
+        </nav>
+    </div>
+
+    <div class="checkout-content" *ngIf="cart">
+        <div class="checkout-form-section">
+            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+                <div class="card premium-card">
+                    <h2>Thông tin giao hàng</h2>
+
+                    <div class="form-group">
+                        <label for="shippingAddress">Địa chỉ nhận hàng</label>
+                        <input type="text" id="shippingAddress" formControlName="shippingAddress"
+                            placeholder="Số nhà, tên đường, phường/xã...">
+                        <div class="error"
+                            *ngIf="checkoutForm.get('shippingAddress')?.touched && checkoutForm.get('shippingAddress')?.invalid">
+                            Vui lòng nhập địa chỉ giao hàng.
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phoneNumber">Số điện thoại</label>
+                        <input type="text" id="phoneNumber" formControlName="phoneNumber"
+                            placeholder="Số điện thoại 10 chữ số">
+                        <div class="error"
+                            *ngIf="checkoutForm.get('phoneNumber')?.touched && checkoutForm.get('phoneNumber')?.invalid">
+                            Vui lòng nhập số điện thoại hợp lệ (10 chữ số).
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Ghi chú (tùy chọn)</label>
+                        <textarea id="notes" formControlName="notes" rows="3"
+                            placeholder="Ghi chú về đơn hàng, ví dụ: thời gian giao hàng..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Phương thức thanh toán</label>
+                        <div class="payment-methods">
+                            <label class="payment-option">
+                                <input type="radio" formControlName="paymentMethod" value="COD">
+                                <span class="radio-label">Thanh toán khi nhận hàng (COD)</span>
+                            </label>
+                            <label class="payment-option">
+                                <input type="radio" formControlName="paymentMethod" value="BANK_TRANSFER">
+                                <span class="radio-label">Chuyển khoản ngân hàng</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" [disabled]="checkoutForm.invalid || isLoading">
+                    <span *ngIf="!isLoading">Xác nhận đặt hàng</span>
+                    <span *ngIf="isLoading" class="loader"></span>
+                </button>
+            </form>
+        </div>
+
+        <div class="checkout-summary-section">
+            <div class="card premium-card">
+                <h2>Tóm tắt đơn hàng</h2>
+                <div class="order-items">
+                    <div class="order-item" *ngFor="let item of cart.items">
+                        <div class="item-img">
+                            <img [src]="item.productImageUrl" [alt]="item.productName">
+                        </div>
+                        <div class="item-info">
+                            <h3>{{item.productName}}</h3>
+                            <p>Số lượng: {{item.quantity}}</p>
+                            <p class="price">{{item.productPrice | currency:'VND':'symbol':'1.0-0'}}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-totals">
+                    <div class="summary-row">
+                        <span>Tạm tính:</span>
+                        <span>{{calculateTotal() | currency:'VND':'symbol':'1.0-0'}}</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Phí vận chuyển:</span>
+                        <span>Miễn phí</span>
+                    </div>
+                    <hr>
+                    <div class="summary-row total">
+                        <span>Tổng cộng:</span>
+                        <span>{{calculateTotal() | currency:'VND':'symbol':'1.0-0'}}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="!cart && !isLoading" class="empty-state">
+        <p>Đang tải thông tin đơn hàng...</p>
+    </div>
+</div>

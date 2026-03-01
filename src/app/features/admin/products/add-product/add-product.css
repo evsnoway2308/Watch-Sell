@@ -85,7 +85,9 @@ label {
   color: #374151;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid #d1d5db;
@@ -95,14 +97,17 @@ input, textarea, select {
   background-color: #f9fafb;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   outline: none;
   border-color: #2563eb;
   background-color: white;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
 }
 
-input.error, select.error {
+input.error,
+select.error {
   border-color: #ef4444;
 }
 
@@ -137,9 +142,44 @@ input.error, select.error {
   margin-bottom: 1rem;
 }
 
+.url-input-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.url-input-group input {
+  flex: 1;
+}
+
+.btn-upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1.2rem;
+}
+
+.btn-upload:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
 .image-item {
   display: flex;
   gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.image-item .url-input-group {
+  flex: 1;
 }
 
 .btn-remove {
@@ -212,6 +252,11 @@ input.error, select.error {
 }
 
 @keyframes rotation {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }

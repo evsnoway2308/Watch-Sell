@@ -1,0 +1,119 @@
+<div class="user-management">
+    <div class="page-header">
+        <div class="header-content">
+            <h1>Quản lý người dùng</h1>
+            <p class="subtitle">Xem và quản lý danh sách tài khoản trong hệ thống</p>
+        </div>
+    </div>
+
+    <div class="filters-card">
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" [(ngModel)]="keyword" (keyup.enter)="onSearch()"
+                placeholder="Tìm theo tên, email hoặc username...">
+            <button class="btn-search" (click)="onSearch()">Tìm kiếm</button>
+        </div>
+
+        <div class="filter-groups">
+            <div class="filter-item">
+                <label>Trạng thái</label>
+                <select [(ngModel)]="selectedStatus" (change)="onStatusChange()">
+                    <option value="ALL">Tất cả trạng thái</option>
+                    <option value="ACTIVE">Hoạt động</option>
+                    <option value="INACTIVE">Bị khóa</option>
+                </select>
+            </div>
+
+            <div class="filter-item">
+                <label>Vai trò</label>
+                <select (change)="onRoleChange($any($event.target).value)">
+                    <option value="ALL">Tất cả vai trò</option>
+                    <option value="USER">Thành viên</option>
+                    <option value="SHOP_OWNER">Chủ cửa hàng</option>
+                </select>
+            </div>
+        </div>
+    </div>
+
+    <div class="table-card">
+        <div class="loading-overlay" *ngIf="isLoading()">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Người dùng</th>
+                        <th>Liên hệ</th>
+                        <th>Vai trò</th>
+                        <th>Trạng thái</th>
+                        <th class="text-right">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let user of users()">
+                        <td>
+                            <div class="user-cell">
+                                <div class="user-avatar">
+                                    <img *ngIf="user.avatarUrl" [src]="user.avatarUrl" alt="Avatar">
+                                    <span *ngIf="!user.avatarUrl">{{ user.name.charAt(0) }}</span>
+                                </div>
+                                <div class="user-info">
+                                    <div class="user-name">{{ user.name }}</div>
+                                    <div class="user-username">@{{ user.username }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="contact-info">
+                                <div><i class="far fa-envelope"></i> {{ user.email }}</div>
+                                <div *ngIf="user.phonenumber"><i class="fas fa-phone-alt"></i> {{ user.phonenumber }}
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge" [ngClass]="getRoleBadgeClass(user.role)">
+                                {{ getRoleDisplayName(user.role) }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="status-indicator" [ngClass]="user.status === 'ACTIVE' ? 'active' : 'inactive'">
+                                <span class="dot"></span>
+                                {{ user.status === 'ACTIVE' ? 'Đang hoạt động' : 'Bị khóa' }}
+                            </span>
+                        </td>
+                        <td class="text-right">
+                            <button class="btn-action" [ngClass]="user.status === 'ACTIVE' ? 'btn-lock' : 'btn-unlock'"
+                                [title]="user.status === 'ACTIVE' ? 'Khóa tài khoản' : 'Mở khóa tài khoản'"
+                                (click)="toggleStatus(user)" [disabled]="user.role === 'ADMIN'">
+                                <i class="fas"
+                                    [ngClass]="user.status === 'ACTIVE' ? 'fa-user-slash' : 'fa-user-check'"></i>
+                            </button>
+                        </td>
+                    </tr>
+
+                    <tr *ngIf="users().length === 0 && !isLoading()">
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-users-slash"></i>
+                            <p>Không tìm thấy người dùng nào phù hợp</p>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="pagination" *ngIf="totalPages() > 1">
+            <button class="btn-page" (click)="goToPage(currentPage() - 1)" [disabled]="currentPage() === 0">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+
+            <span class="page-info">Trang {{ currentPage() + 1 }} / {{ totalPages() }}</span>
+
+            <button class="btn-page" (click)="goToPage(currentPage() + 1)"
+                [disabled]="currentPage() === totalPages() - 1">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>

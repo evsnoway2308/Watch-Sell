@@ -1,10 +1,11 @@
 <div class="add-product-container">
     <div class="header-section">
         <div class="breadcrumb">
-            <a routerLink="/admin/products">Sản phẩm</a> / <span>Thêm mới</span>
+            <a routerLink="/admin/products">Sản phẩm</a> / <span>{{ isEditMode ? 'Chỉnh sửa' : 'Thêm mới' }}</span>
         </div>
-        <h1>Thêm sản phẩm mới</h1>
-        <p class="subtitle">Điền thông tin chi tiết để thêm sản phẩm mới vào cửa hàng của bạn</p>
+        <h1>{{ isEditMode ? 'Chỉnh sửa sản phẩm' : 'Thêm sản phẩm mới' }}</h1>
+        <p class="subtitle">{{ isEditMode ? 'Cập nhật thông tin chi tiết của sản phẩm' : 'Điền thông tin chi tiết để
+            thêm sản phẩm mới vào cửa hàng của bạn' }}</p>
     </div>
 
     <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form card">
@@ -60,9 +61,17 @@
                     <h2><i class="icon-image"></i> Hình ảnh sản phẩm</h2>
 
                     <div class="form-group">
-                        <label for="imageUrl">Ảnh đại diện (URL) *</label>
-                        <div class="url-input-group">
-                            <input type="text" id="imageUrl" formControlName="imageUrl" placeholder="HTTPS URL">
+                        <label for="imageUrl">Ảnh đại diện *</label>
+                        <div class="image-upload-wrapper">
+                            <div class="url-input-group">
+                                <input type="text" id="imageUrl" formControlName="imageUrl"
+                                    placeholder="Nhập URL hoặc tải lên">
+                                <label for="main-image-upload" class="btn-upload" title="Tải ảnh lên">
+                                    📁
+                                </label>
+                                <input type="file" id="main-image-upload" (change)="onFileSelected($event)" hidden
+                                    accept="image/*">
+                            </div>
                         </div>
                         <div class="image-preview" *ngIf="productForm.get('imageUrl')?.value">
                             <img [src]="productForm.get('imageUrl')?.value" alt="Preview">
@@ -73,7 +82,14 @@
                         <label>Ảnh chi tiết khác</label>
                         <div formArrayName="images" class="extra-images-list">
                             <div *ngFor="let img of extraImages.controls; let i=index" class="image-item">
-                                <input [formControlName]="i" placeholder="URL ảnh chi tiết {{i+1}}">
+                                <div class="url-input-group">
+                                    <input [formControlName]="i" placeholder="URL ảnh chi tiết {{i+1}}">
+                                    <label [for]="'extra-image-' + i" class="btn-upload" title="Tải ảnh lên">
+                                        📁
+                                    </label>
+                                    <input type="file" [id]="'extra-image-' + i" (change)="onFileSelected($event, i)"
+                                        hidden accept="image/*">
+                                </div>
                                 <button type="button" class="btn-remove" (click)="removeImage(i)">&times;</button>
                             </div>
                         </div>
@@ -87,8 +103,8 @@
 
         <div class="form-actions">
             <button type="button" class="btn-ghost" routerLink="/admin/products">Hủy bỏ</button>
-            <button type="submit" class="btn-primary" [disabled]="isLoading">
-                <span *ngIf="!isLoading">Lưu sản phẩm</span>
+            <button type="submit" class="btn-primary" [disabled]="isLoading || productForm.invalid">
+                <span *ngIf="!isLoading">{{ isEditMode ? 'Cập nhật sản phẩm' : 'Lưu sản phẩm' }}</span>
                 <span *ngIf="isLoading" class="loader"></span>
             </button>
         </div>

@@ -1,0 +1,164 @@
+<div class="profile-container">
+    <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Đang tải thông tin hồ sơ...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="profile-content">
+        <div class="profile-header">
+            <h1>Hồ sơ cá nhân</h1>
+            <p>Quản lý thông tin tài khoản và bảo mật của bạn</p>
+        </div>
+
+        <div class="profile-grid">
+            <!-- Left: Avatar & Info Summary -->
+            <div class="profile-sidebar">
+                <div class="card avatar-card">
+                    <div class="avatar-section">
+                        <div class="avatar-wrapper">
+                            <img [src]="profileForm.get('avatarUrl')?.value || 'assets/placeholder-user.png'"
+                                alt="Avatar">
+                            <label for="avatar-upload" class="upload-badge" title="Thay đổi ảnh đại diện">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                            <input type="file" id="avatar-upload" (change)="onFileSelected($event)" hidden
+                                accept="image/*">
+                        </div>
+                        <h2>{{ user?.name || user?.fullName }}</h2>
+                        <p class="role-badge"><i class="fas fa-shield-alt"></i> {{ getRoleDisplayName(user?.role) }}</p>
+                    </div>
+
+                    <div class="sidebar-info">
+                        <div class="info-item">
+                            <i class="fas fa-at"></i>
+                            <div class="info-details">
+                                <span class="info-label">Username</span>
+                                <span class="info-value">@{{ user?.username }}</span>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <i class="fas fa-envelope"></i>
+                            <div class="info-details">
+                                <span class="info-label">Email liên kết</span>
+                                <span class="info-value">{{ user?.email }}</span>
+                            </div>
+                        </div>
+                        <div class="info-item" *ngIf="user?.address">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div class="info-details">
+                                <span class="info-label">Địa chỉ</span>
+                                <span class="info-value">{{ user?.address }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Tabbed Forms -->
+            <div class="profile-main">
+                <!-- Profile Information -->
+                <div class="card section-card">
+                    <div class="section-header">
+                        <i class="fas fa-user-circle"></i>
+                        <h3>Thông tin cá nhân</h3>
+                    </div>
+                    <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="name">Họ và tên</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" id="name" formControlName="name" placeholder="Nhập họ tên">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" id="email" formControlName="email" placeholder="Nhập email">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phonenumber">Số điện thoại</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-phone"></i>
+                                    <input type="text" id="phonenumber" formControlName="phonenumber"
+                                        placeholder="Nhập số điện thoại">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Địa chỉ</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <input type="text" id="address" formControlName="address"
+                                        placeholder="Nhập địa chỉ của bạn">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-primary" [disabled]="profileForm.invalid || isSubmitting">
+                                <i class="fas fa-save" *ngIf="!isSubmitting"></i>
+                                <span>{{ isSubmitting ? 'Đang lưu...' : 'Lưu thay đổi' }}</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Password Change -->
+                <div class="card section-card danger-zone">
+                    <div class="section-header">
+                        <i class="fas fa-lock text-warning"></i>
+                        <h3>Đổi mật khẩu</h3>
+                    </div>
+                    <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="oldPassword">Mật khẩu hiện tại</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-key"></i>
+                                    <input type="password" id="oldPassword" formControlName="oldPassword"
+                                        placeholder="••••••••">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newPassword">Mật khẩu mới</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-shield-alt"></i>
+                                    <input type="password" id="newPassword" formControlName="newPassword"
+                                        placeholder="Ít nhất 6 ký tự">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-check-circle"></i>
+                                    <input type="password" id="confirmPassword" formControlName="confirmPassword"
+                                        placeholder="••••••••">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="error-msg"
+                            *ngIf="passwordForm.hasError('mismatch') && passwordForm.get('confirmPassword')?.touched">
+                            <i class="fas fa-exclamation-circle"></i> Mật khẩu xác nhận không khớp
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn-secondary"
+                                [disabled]="passwordForm.invalid || isChangingPassword">
+                                <i class="fas fa-sync" *ngIf="!isChangingPassword"></i>
+                                <span>{{ isChangingPassword ? 'Đang cập nhật...' : 'Cập nhật mật khẩu' }}</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

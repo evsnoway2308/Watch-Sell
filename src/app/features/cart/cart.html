@@ -1,0 +1,59 @@
+<div class="cart-container">
+    <div class="cart-header">
+        <h1>Giỏ hàng của bạn</h1>
+        <p *ngIf="cartData && cartData.items.length > 0">Bạn có {{ cartData.items.length }} sản phẩm trong giỏ hàng</p>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Đang tải giỏ hàng...</p>
+    </div>
+
+    <div *ngIf="!isLoading && (!cartData || cartData.items.length === 0)" class="empty-cart">
+        <div class="empty-icon">🛒</div>
+        <h2>Giỏ hàng trống</h2>
+        <p>Có vẻ như bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
+        <button btn-primary routerLink="/">Tiếp tục mua sắm</button>
+    </div>
+
+    <div *ngIf="!isLoading && cartData && cartData.items.length > 0" class="cart-content">
+        <div class="cart-items">
+            <div *ngFor="let item of cartData.items" class="cart-item card">
+                <div class="item-image">
+                    <img [src]="item.productImageUrl || 'assets/placeholder-product.png'" [alt]="item.productName">
+                </div>
+                <div class="item-details">
+                    <h3 [routerLink]="['/products', item.productId]">{{ item.productName }}</h3>
+                    <p class="price">{{ item.productPrice | currency:'VND':'symbol':'1.0-0' }}</p>
+
+                    <div class="item-actions">
+                        <div class="quantity-control">
+                            <button (click)="updateQuantity(item.productId, item.quantity - 1)"
+                                [disabled]="item.quantity <= 1">-</button>
+                            <span>{{ item.quantity }}</span>
+                            <button (click)="updateQuantity(item.productId, item.quantity + 1)">+</button>
+                        </div>
+                        <button class="btn-remove" (click)="removeItem(item.productId)">Xóa</button>
+                    </div>
+                </div>
+                <div class="item-total">
+                    {{ item.subTotal | currency:'VND':'symbol':'1.0-0' }}
+                </div>
+            </div>
+        </div>
+
+        <div class="cart-summary card">
+            <h2>Tóm tắt đơn hàng</h2>
+            <div class="summary-row">
+                <span>Tạm tính</span>
+                <span>{{ cartData.totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+            </div>
+            <div class="summary-row total">
+                <span>Tổng cộng</span>
+                <span>{{ cartData.totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+            </div>
+            <button class="btn-checkout btn-primary" routerLink="/checkout">Thanh toán ngay</button>
+            <button class="btn-continue-shopping btn-ghost" routerLink="/">Tiếp tục mua sắm</button>
+        </div>
+    </div>
+</div>

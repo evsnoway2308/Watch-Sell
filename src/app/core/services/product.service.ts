@@ -5,19 +5,25 @@ import { ProductResponse } from '../model/product.model';
 import { Page } from '../model/pagination.model';
 import { ProductDetailResponse } from '../model/product-detail.model';
 import { ProductRequest } from '../model/product-request.model';
+import { environment } from '../../../environment/environment';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProductService {
-    private apiUrl = '/api/products';
+    private apiUrl = `${environment.apiUrl}/products`;
+    private uploadUrl = `${environment.apiUrl}/upload`;
 
     constructor(private http: HttpClient) { }
 
-    getProducts(page: number = 0, size: number = 10): Observable<Page<ProductResponse>> {
-        const params = new HttpParams()
+    getProducts(page: number = 0, size: number = 10, categoryId?: number): Observable<Page<ProductResponse>> {
+        let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
+
+        if (categoryId !== undefined && categoryId !== null) {
+            params = params.set('categoryId', categoryId.toString());
+        }
 
         return this.http.get<Page<ProductResponse>>(this.apiUrl, { params });
     }
@@ -28,5 +34,19 @@ export class ProductService {
 
     addProduct(product: ProductRequest): Observable<string> {
         return this.http.post(this.apiUrl, product, { responseType: 'text' });
+    }
+
+    updateProduct(id: number, product: ProductRequest): Observable<string> {
+        return this.http.put(`${this.apiUrl}/${id}`, product, { responseType: 'text' });
+    }
+
+    deleteProduct(id: number): Observable<string> {
+        return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
+    }
+
+    uploadProductImage(file: File): Observable<{ url: string }> {
+        const formData = new FormData();
+        formData.append('file', file);
+        return this.http.post<{ url: string }>(`${this.uploadUrl}/product`, formData);
     }
 }

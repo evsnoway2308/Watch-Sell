@@ -1,0 +1,86 @@
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink, ActivatedRoute } from '@angular/router';
+import { ProductService } from '../../../core/services/product.service';
+import { CategoryService } from '../../../core/services/category.service';
+import { ProductResponse } from '../../../core/model/product.model';
+import { Page } from '../../../core/model/pagination.model';
+
+@Component({
+    selector: 'app-product-list',
+    standalone: true,
+    imports: [CommonModule, RouterLink],
+    templateUrl: './product-list.html',
+    styleUrl: './product-list.css'
+})
+export class ProductListComponent implements OnInit {
+    private productService = inject(ProductService);
+    private categoryService = inject(CategoryService);
+    private route = inject(ActivatedRoute);
+
+    products: ProductResponse[] = [];
+    currentPage: number = 0;
+    pageSize: number = 12;
+    totalPages: number = 0;
+    totalElements: number = 0;
+    isLoading: boolean = false;
+    categoryId?: number;
+    categoryName: string = 'Sản phẩm';
+
+    ngOnInit(): void {
+        this.route.queryParams.subscribe(params => {
+            this.categoryId = params['category'] !== undefined ? +params['category'] : undefined;
+            this.currentPage = 0; // Reset to first page when category changes
+            this.loadProducts();
+            if (this.categoryId !== undefined && this.categoryId !== null) {
+                this.loadCategoryName();
+            } else {
+                this.categoryName = 'Tất cả sản phẩm';
+            }
+        });
+    }
+
+    loadProducts(): void {
+        this.isLoading = true;
+        this.productService.getProducts(this.currentPage, this.pageSize, this.categoryId).subscribe({
+            next: (page: Page<ProductResponse>) => {
+                this.products = page.content;
+                this.totalPages = page.totalPages;
+                this.totalElements = page.totalElements;
+                this.isLoading = false;
+            },
+            error: (err) => {
+                console.error('Error fetching products:', err);
+                this.isLoading = false;
+            }
+        });
+    }
+
+    loadCategoryName(): void {
+        this.categoryService.getCategoryById(this.categoryId!).subscribe({
+            next: (cat) => {
+                this.categoryName = cat.name;
+            },
+            error: (err) => {
+                console.error('Error fetching category name:', err);
+                // Fallback to a generic name
+            }
+        });
+    }
+
+    onPageChange(page: number): void {
+        if (page >= 0 && page < this.totalPages) {
+            this.currentPage = page;
+            this.loadProducts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    getPages(): number[] {
+        const pages = [];
+        for (let i = 0; i < this.totalPages; i++) {
+            pages.push(i);
+        }
+        return pages;
+    }
+}

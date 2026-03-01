@@ -15,7 +15,7 @@
     <!-- Actions -->
     <div class="header-actions">
       <!-- Cart -->
-      <a href="javascript:void(0)" class="action-btn">
+      <a routerLink="/cart" class="action-btn">
         <div class="icon-wrapper">
           <i class="fas fa-shopping-cart"></i>
         </div>
@@ -23,21 +23,41 @@
 
       <!-- User Account -->
       <div class="user-account-v2" *ngIf="isLoggedIn; else loginParams">
-        <div class="avatar-container">
-          <!-- Avatar placeholder if no avatar -->
-          <i class="fas fa-user-circle" *ngIf="!user()?.avatar" style="font-size: 40px; color: #94a3b8;"></i>
-          <img [src]="user()?.avatar" *ngIf="user()?.avatar" alt="Avatar" class="user-avatar-img">
+        <div class="user-dropdown">
+          <div class="user-info-link">
+            <div class="avatar-container">
+              <!-- Avatar placeholder if no avatar -->
+              <i class="fas fa-user-circle" *ngIf="!user()?.avatar" style="font-size: 32px; color: #94a3b8;"></i>
+              <img [src]="user()?.avatar" *ngIf="user()?.avatar" alt="Avatar" class="user-avatar-img">
+            </div>
+            <div class="user-details-box">
+              <span class="member-badge">{{ getRoleDisplayName(user()?.role) }}</span>
+              <span class="user-display-name" *ngIf="!user()" style="font-size: 0.8rem; font-weight: normal;">Đang
+                tải...</span>
+              <span class="user-display-name" *ngIf="user()"
+                [title]="user()?.fullName || user()?.name || user()?.username">{{ user()?.fullName || user()?.name ||
+                user()?.username
+                }}</span>
+            </div>
+            <i class="fas fa-chevron-down dropdown-arrow"></i>
+          </div>
+
+          <div class="dropdown-menu">
+            <a routerLink="/profile" class="dropdown-item">
+              <i class="fas fa-user-edit"></i>
+              <span>Hồ sơ của tôi</span>
+            </a>
+            <a routerLink="/admin" class="dropdown-item" *ngIf="isAdmin">
+              <i class="fas fa-user-shield"></i>
+              <span>Trang quản trị</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item logout-item" (click)="logout()">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Đăng xuất</span>
+            </button>
+          </div>
         </div>
-        <div class="user-details-box">
-          <span class="member-badge">Thành viên</span>
-          <span class="user-display-name" *ngIf="!user()" style="font-size: 0.8rem; font-weight: normal;">Đang
-            tải...</span>
-          <span class="user-display-name" *ngIf="user()">{{ user()?.fullName || user()?.name || user()?.username
-            }}</span>
-        </div>
-        <button class="logout-icon-btn" (click)="logout()" title="Đăng xuất">
-          <i class="fas fa-sign-out-alt"></i>
-        </button>
       </div>
 
       <ng-template #loginParams>
@@ -48,4 +68,19 @@
 
     </div>
   </div>
+
+  <!-- Category Navigation -->
+  <nav class="category-nav">
+    <div class="category-container">
+      <a routerLink="/products" class="category-link" routerLinkActive="active"
+        [routerLinkActiveOptions]="{exact: true}">
+        <i class="fas fa-th-large"></i>
+        <span>Tất cả</span>
+      </a>
+      <a *ngFor="let cat of categories()" [routerLink]="['/products']" [queryParams]="{category: cat.id}"
+        class="category-link" routerLinkActive="active">
+        <span>{{ cat.name }}</span>
+      </a>
+    </div>
+  </nav>
 </header>

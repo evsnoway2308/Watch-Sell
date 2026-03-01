@@ -1,0 +1,52 @@
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
+import { CartService } from '../../core/services/cart.service';
+import { CartResponse, CartItemResponse } from '../../core/model/cart.model';
+
+@Component({
+    selector: 'app-cart',
+    standalone: true,
+    imports: [CommonModule, RouterLink],
+    templateUrl: './cart.html',
+    styleUrl: './cart.css'
+})
+export class CartComponent implements OnInit {
+    cartData: CartResponse | null = null;
+    isLoading = false;
+
+    constructor(public cartService: CartService) { }
+
+    ngOnInit(): void {
+        this.isLoading = true;
+        this.cartService.getCart().subscribe({
+            next: (cart) => {
+                this.cartData = cart;
+                this.isLoading = false;
+            },
+            error: (err) => {
+                console.error('Error fetching cart:', err);
+                this.isLoading = false;
+            }
+        });
+    }
+
+    updateQuantity(productId: number, quantity: number): void {
+        if (quantity < 1) return;
+        this.cartService.updateQuantity(productId, quantity).subscribe(() => {
+            this.refreshCart();
+        });
+    }
+
+    removeItem(productId: number): void {
+        if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+            this.cartService.removeFromCart(productId).subscribe(() => {
+                this.refreshCart();
+            });
+        }
+    }
+
+    refreshCart(): void {
+        this.cartService.getCart().subscribe(cart => this.cartData = cart);
+    }
+}

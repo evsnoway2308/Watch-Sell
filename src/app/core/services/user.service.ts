@@ -26,11 +26,11 @@ export class UserService {
   }
 
   updateProfile(data: any) {
-    return this.http.put<any>(`${this.apiUrl}/profile/update`, data, this.getAuthHeaders());
+    return this.http.put<any>(`${this.apiUrl}/profile/update`, data);
   }
 
   changePassword(data: any) {
-    return this.http.put(`${this.apiUrl}/profile/change-password`, data, { ...this.getAuthHeaders(), responseType: 'text' });
+    return this.http.put(`${this.apiUrl}/profile/change-password`, data, { responseType: 'text' });
   }
 
   uploadAvatar(file: File) {
