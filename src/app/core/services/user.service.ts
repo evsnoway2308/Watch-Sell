@@ -1,29 +1,42 @@
-import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable, inject, PLATFORM_ID } from '@angular/core';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environment/environment';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private apiUrl = `${environment.apiUrl}`;
+  private platformId = inject(PLATFORM_ID);
 
   constructor(private http: HttpClient) { }
 
+  private getAuthHeaders(): { headers: HttpHeaders } {
+    let headers = new HttpHeaders();
+    if (isPlatformBrowser(this.platformId)) {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        headers = headers.set('Authorization', `Bearer ${token}`);
+      }
+    }
+    return { headers };
+  }
+
   getMyProfile() {
-    return this.http.get<any>(`${this.apiUrl}/profile/me`);
+    return this.http.get<any>(`${this.apiUrl}/auth/profile`, this.getAuthHeaders());
   }
 
   updateProfile(data: any) {
-    return this.http.put<any>(`${this.apiUrl}/profile/update`, data);
+    return this.http.put<any>(`${this.apiUrl}/profile/update`, data, this.getAuthHeaders());
   }
 
   changePassword(data: any) {
-    return this.http.put(`${this.apiUrl}/profile/change-password`, data, { responseType: 'text' });
+    return this.http.put(`${this.apiUrl}/profile/change-password`, data, { ...this.getAuthHeaders(), responseType: 'text' });
   }
 
   uploadAvatar(file: File) {
     const formData = new FormData();
     formData.append('file', file);
-    return this.http.post<any>(`${this.apiUrl}/upload/avatar`, formData);
+    return this.http.post<any>(`${this.apiUrl}/upload/avatar`, formData, this.getAuthHeaders());
   }
 
   getAllUsers(page: number, size: number, keyword?: string, status?: string, isShopOwner?: boolean) {

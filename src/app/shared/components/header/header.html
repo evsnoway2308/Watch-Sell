@@ -22,29 +22,27 @@
       </a>
 
       <!-- User Account -->
-      <div class="user-account" *ngIf="user(); else loginParams">
-        <div class="action-btn" (click)="toggleDropdown()">
-          <div class="icon-wrapper">
-             <!-- Avatar placeholder if no avatar -->
-            <i class="fas fa-user-circle" *ngIf="!user()?.avatar"></i>
-            <img [src]="user()?.avatar" *ngIf="user()?.avatar" alt="Avatar" class="avatar-img">
-          </div>
-          <span class="label">{{ user()?.fullName || user()?.username }}</span>
-          <i class="fas fa-chevron-down small-icon"></i>
+      <div class="user-account-v2" *ngIf="isLoggedIn; else loginParams">
+        <div class="avatar-container">
+          <!-- Avatar placeholder if no avatar -->
+          <i class="fas fa-user-circle" *ngIf="!user()?.avatar" style="font-size: 40px; color: #94a3b8;"></i>
+          <img [src]="user()?.avatar" *ngIf="user()?.avatar" alt="Avatar" class="user-avatar-img">
         </div>
-
-        <!-- Dropdown Menu -->
-        <div class="dropdown-menu" *ngIf="showDropdown">
-          <a routerLink="/profile" class="dropdown-item"><i class="fas fa-user"></i> Hồ sơ</a>
-          <a routerLink="/orders" class="dropdown-item"><i class="fas fa-box"></i> Đơn mua</a>
-          <div class="dropdown-divider"></div>
-          <a (click)="logout()" class="dropdown-item text-danger no-select"><i class="fas fa-sign-out-alt"></i> Đăng xuất</a>
+        <div class="user-details-box">
+          <span class="member-badge">Thành viên</span>
+          <span class="user-display-name" *ngIf="!user()" style="font-size: 0.8rem; font-weight: normal;">Đang
+            tải...</span>
+          <span class="user-display-name" *ngIf="user()">{{ user()?.fullName || user()?.name || user()?.username
+            }}</span>
         </div>
+        <button class="logout-icon-btn" (click)="logout()" title="Đăng xuất">
+          <i class="fas fa-sign-out-alt"></i>
+        </button>
       </div>
 
       <ng-template #loginParams>
         <a routerLink="/login" class="action-btn login-btn">
-            <span>Đăng ký/Đăng nhập</span>
+          <span>Đăng nhập</span>
         </a>
       </ng-template>
 

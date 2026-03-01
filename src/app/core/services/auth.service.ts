@@ -22,7 +22,26 @@ export class AuthService {
 
   private hasToken(): boolean {
     if (isPlatformBrowser(this.platformId)) {
-      return !!localStorage.getItem('access_token');
+      const token = localStorage.getItem('access_token');
+      if (!token) return false;
+
+      const parts = token.split('.');
+      if (parts.length !== 3) return true; // Trả về true nếu token không phải JWT (opaque token)
+
+      try {
+        const payload = JSON.parse(atob(parts[1]));
+        const isExpired = payload.exp && (payload.exp * 1000) < Date.now();
+        if (isExpired) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          localStorage.removeItem('user_name');
+          localStorage.removeItem('user_avatar');
+          return false;
+        }
+        return true;
+      } catch (e) {
+        return true; // Nếu lỗi parse nhưng có token thì vẫn coi như là login
+      }
     }
     return false;
   }

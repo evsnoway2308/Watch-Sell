@@ -36,6 +36,12 @@ export class LoginComponent {
           this.userService.getMyProfile().subscribe({
             next: (user) => {
               this.toastr.success(`Chào mừng trở lại, ${user.fullName}!`);
+              if (typeof window !== 'undefined' && window.localStorage) {
+                localStorage.setItem('user_name', user.fullName || user.name || user.username);
+                if (user.avatar) {
+                  localStorage.setItem('user_avatar', user.avatar);
+                }
+              }
 
               if (user.role === 'ADMIN' || user.role === 'ROLE_ADMIN') {
                 this.router.navigate(['/admin/dashboard']);

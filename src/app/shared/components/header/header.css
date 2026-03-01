@@ -146,72 +146,76 @@
   opacity: 0.6;
 }
 
-/* User Dropdown */
-.user-account {
-  position: relative;
-}
-
-.dropdown-menu {
-  position: absolute;
-  top: 120%;
-  right: 0;
-  width: 200px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  padding: 0.5rem;
-  border: 1px solid #e2e8f0;
-  animation: slideIn 0.2s ease-out;
-}
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.dropdown-item {
+/* User Profile v2 */
+.user-account-v2 {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  color: #475569;
-  text-decoration: none;
-  border-radius: 8px;
-  transition: all 0.2s;
-  font-size: 0.9rem;
-  cursor: pointer;
+  gap: 8px;
+  /* Slightly tighter gap */
 }
 
-.dropdown-item:hover {
-  background: #f1f5f9;
+.avatar-container {
+  width: 36px;
+  /* Slightly smaller avatar */
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8fafc;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.user-avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-details-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.member-badge {
+  font-size: 0.70rem;
+  /* Smaller text for "Thành viên" */
+  color: #64748b;
+  margin-bottom: 0px;
+}
+
+.user-display-name {
+  font-size: 0.85rem;
+  /* Smaller, bolder name */
+  font-weight: 700;
   color: #1e293b;
 }
 
-.dropdown-item i {
-  width: 16px;
-  text-align: center;
+.logout-icon-btn {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  /* Red icon */
+  margin-left: 8px;
 }
 
-.dropdown-divider {
-  height: 1px;
-  background: #e2e8f0;
-  margin: 0.5rem 0;
+.logout-icon-btn:hover {
+  background: rgba(239, 68, 68, 0.05);
 }
 
-.no-select {
-  -webkit-user-select: none;
-  /* Safari */
-  -ms-user-select: none;
-  /* IE 10 and IE 11 */
-  user-select: none;
-  /* Standard syntax */
+.logout-icon-btn i {
+  font-size: 1.1rem;
 }
 
 /* Login Button Specifics */
