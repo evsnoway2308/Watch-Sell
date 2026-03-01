@@ -138,12 +138,41 @@
 .price-row {
     margin-top: auto;
     padding-top: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .price {
     font-size: 1.25rem;
     font-weight: 800;
     color: #1e293b;
+}
+
+.btn-add-mini {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-add-mini:hover:not(:disabled) {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+    transform: scale(1.1);
+}
+
+.btn-add-mini:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 /* Loading/Empty States */

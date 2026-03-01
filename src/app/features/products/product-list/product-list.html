@@ -32,6 +32,10 @@
                     </div>
                     <div class="price-row">
                         <span class="price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</span>
+                        <button class="btn-add-mini" [disabled]="!product.available || product.stock === 0"
+                            (click)="addToCart($event, product)">
+                            <i class="fas fa-cart-plus"></i>
+                        </button>
                     </div>
                 </div>
             </a>

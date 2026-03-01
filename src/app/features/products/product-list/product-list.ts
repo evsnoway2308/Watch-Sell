@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink, ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryService } from '../../../core/services/category.service';
+import { CartService } from '../../../core/services/cart.service';
 import { ProductResponse } from '../../../core/model/product.model';
 import { Page } from '../../../core/model/pagination.model';
 
@@ -16,6 +17,7 @@ import { Page } from '../../../core/model/pagination.model';
 export class ProductListComponent implements OnInit {
     private productService = inject(ProductService);
     private categoryService = inject(CategoryService);
+    private cartService = inject(CartService);
     private route = inject(ActivatedRoute);
 
     products: ProductResponse[] = [];
@@ -74,6 +76,21 @@ export class ProductListComponent implements OnInit {
             this.loadProducts();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
+    }
+
+    addToCart(event: Event, product: ProductResponse): void {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.cartService.addToCart(product.id).subscribe({
+            next: () => {
+                alert(`Đã thêm ${product.name} vào giỏ hàng!`);
+            },
+            error: (err) => {
+                console.error('Error adding to cart:', err);
+                alert('Có lỗi xảy ra khi thêm vào giỏ hàng.');
+            }
+        });
     }
 
     getPages(): number[] {
