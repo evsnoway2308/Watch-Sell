@@ -1,0 +1,96 @@
+<div class="add-product-container">
+    <div class="header-section">
+        <div class="breadcrumb">
+            <a routerLink="/admin/products">Sản phẩm</a> / <span>Thêm mới</span>
+        </div>
+        <h1>Thêm sản phẩm mới</h1>
+        <p class="subtitle">Điền thông tin chi tiết để thêm sản phẩm mới vào cửa hàng của bạn</p>
+    </div>
+
+    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="product-form card">
+        <div class="form-grid">
+            <!-- Cột trái: Thông tin cơ bản -->
+            <div class="form-column">
+                <section class="form-section">
+                    <h2><i class="icon-info"></i> Thông tin cơ bản</h2>
+
+                    <div class="form-group">
+                        <label for="name">Tên sản phẩm *</label>
+                        <input type="text" id="name" formControlName="name" placeholder="VD: Rolex Submariner Date"
+                            [class.error]="isSubmitted && productForm.get('name')?.invalid">
+                        <small class="error-msg"
+                            *ngIf="isSubmitted && productForm.get('name')?.errors?.['required']">Tên sản phẩm là bắt
+                            buộc</small>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="price">Giá bán (VND) *</label>
+                            <input type="number" id="price" formControlName="price" placeholder="0"
+                                [class.error]="isSubmitted && productForm.get('price')?.invalid">
+                        </div>
+                        <div class="form-group">
+                            <label for="stock">Số lượng kho *</label>
+                            <input type="number" id="stock" formControlName="stock" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="categoryId">Danh mục *</label>
+                        <select id="categoryId" formControlName="categoryId"
+                            [class.error]="isSubmitted && productForm.get('categoryId')?.invalid">
+                            <option [ngValue]="null" disabled>Chọn danh mục</option>
+                            <option *ngFor="let cat of categories" [value]="cat.id">{{ cat.name }}</option>
+                        </select>
+                    </div>
+                </section>
+
+                <section class="form-section">
+                    <h2><i class="icon-text"></i> Mô tả chi tiết</h2>
+                    <div class="form-group">
+                        <textarea id="description" formControlName="description" rows="6"
+                            placeholder="Mô tả về chất liệu, bộ máy, kích thước..."></textarea>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Cột phải: Hình ảnh -->
+            <div class="form-column">
+                <section class="form-section">
+                    <h2><i class="icon-image"></i> Hình ảnh sản phẩm</h2>
+
+                    <div class="form-group">
+                        <label for="imageUrl">Ảnh đại diện (URL) *</label>
+                        <div class="url-input-group">
+                            <input type="text" id="imageUrl" formControlName="imageUrl" placeholder="HTTPS URL">
+                        </div>
+                        <div class="image-preview" *ngIf="productForm.get('imageUrl')?.value">
+                            <img [src]="productForm.get('imageUrl')?.value" alt="Preview">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ảnh chi tiết khác</label>
+                        <div formArrayName="images" class="extra-images-list">
+                            <div *ngFor="let img of extraImages.controls; let i=index" class="image-item">
+                                <input [formControlName]="i" placeholder="URL ảnh chi tiết {{i+1}}">
+                                <button type="button" class="btn-remove" (click)="removeImage(i)">&times;</button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-secondary btn-sm" (click)="addImage()">
+                            + Thêm URL ảnh
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="btn-ghost" routerLink="/admin/products">Hủy bỏ</button>
+            <button type="submit" class="btn-primary" [disabled]="isLoading">
+                <span *ngIf="!isLoading">Lưu sản phẩm</span>
+                <span *ngIf="isLoading" class="loader"></span>
+            </button>
+        </div>
+    </form>
+</div>

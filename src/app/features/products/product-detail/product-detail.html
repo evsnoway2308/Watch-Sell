@@ -1,0 +1,70 @@
+<div class="product-detail-container" *ngIf="!isLoading && product; else loadingOrError">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb">
+        <a routerLink="/">Trang chủ</a> /
+        <span class="category">{{ product.categoryName }}</span> /
+        <span class="current">{{ product.name }}</span>
+    </nav>
+
+    <div class="product-layout">
+        <!-- Image Gallery -->
+        <div class="gallery-section">
+            <div class="main-image">
+                <img [src]="selectedImage || 'assets/placeholder-product.png'" [alt]="product.name">
+            </div>
+            <div class="thumbnail-strip" *ngIf="allImages.length > 1">
+                <div *ngFor="let img of allImages" class="thumb" [class.active]="img === selectedImage"
+                    (click)="selectImage(img)">
+                    <img [src]="img" [alt]="product.name">
+                </div>
+            </div>
+        </div>
+
+        <!-- Product Info -->
+        <div class="info-section">
+            <h1 class="product-title">{{ product.name }}</h1>
+
+            <div class="rating-summary">
+                <div class="stars">
+                    <span *ngFor="let star of [1,2,3,4,5]" class="star"
+                        [class.filled]="star <= product.averageRating">★</span>
+                </div>
+                <span class="review-count">({{ product.reviewCount }} đánh giá)</span>
+            </div>
+
+            <div class="price-tag">
+                {{ product.price | currency:'VND':'symbol':'1.0-0' }}
+            </div>
+
+            <div class="status-badge" [class.in-stock]="product.available && product.stock > 0"
+                [class.out-of-stock]="!product.available || product.stock === 0">
+                {{ (product.available && product.stock > 0) ? 'Còn hàng (' + product.stock + ')' : 'Hết hàng' }}
+            </div>
+
+            <div class="description">
+                <h3>Mô tả sản phẩm</h3>
+                <p class="desc-text">{{ product.description }}</p>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-cart" [disabled]="!product.available || product.stock === 0" (click)="addToCart()">
+                    Thêm vào giỏ hàng
+                </button>
+                <button class="btn-buy" [disabled]="!product.available || product.stock === 0" (click)="buyNow()">
+                    Mua ngay
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<ng-template #loadingOrError>
+    <div class="status-container">
+        <div *ngIf="isLoading" class="spinner"></div>
+        <p *ngIf="isLoading">Đang tải chi tiết sản phẩm...</p>
+        <div *ngIf="!isLoading && !product" class="error">
+            <p>Không tìm thấy sản phẩm hoặc có lỗi xảy ra.</p>
+            <a routerLink="/" class="btn-primary">Quay lại trang chủ</a>
+        </div>
+    </div>
+</ng-template>

@@ -2,16 +2,68 @@
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="hero-content">
-            <h1>Nơi mua sắm yêu thích của bạn với hàng ngàn sản phẩm chất lượng.</h1>
+            <h1>Khám phá bộ sưu tập đồng hồ phong cách</h1>
+            <p>Nâng tầm phong cách của bạn với những mẫu đồng hồ tinh tế và đẳng cấp nhất.</p>
             <button class="btn-primary">Mua sắm ngay</button>
         </div>
     </section>
 
-    <!-- Featured Products Placeholder -->
-    <section class="featured-section">
-        <h2>Sản phẩm nổi bật</h2>
-        <div class="empty-state">
-            <p>Danh sách sản phẩm đang được cập nhật...</p>
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="section-header">
+            <h2>Sản phẩm của chúng tôi</h2>
+            <p>{{ totalElements }} sản phẩm được tìm thấy</p>
+        </div>
+
+        <div *ngIf="isLoading" class="loading-state">
+            <div class="spinner"></div>
+            <p>Đang tải sản phẩm...</p>
+        </div>
+
+        <div *ngIf="!isLoading && products.length > 0" class="product-grid">
+            <a *ngFor="let product of products" class="product-card" [routerLink]="['/products', product.id]">
+                <div class="product-image">
+                    <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name">
+                    <div *ngIf="!product.available || product.stock === 0" class="badge out-of-stock">Hết hàng</div>
+                </div>
+                <div class="product-info">
+                    <span class="category">{{ product.categoryName }}</span>
+                    <h3 class="name">{{ product.name }}</h3>
+                    <div class="rating">
+                        <div class="stars">
+                            <i *ngFor="let star of [1,2,3,4,5]" class="star"
+                                [class.filled]="star <= product.averageRating">★</i>
+                        </div>
+                        <span class="reviews">({{ product.reviewCount || 0 }})</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div *ngIf="!isLoading && products.length === 0" class="empty-state">
+            <p>Không tìm thấy sản phẩm nào.</p>
+        </div>
+
+        <!-- Pagination -->
+        <div *ngIf="totalPages > 1" class="pagination">
+            <button class="page-btn" [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
+                &laquo; Trước
+            </button>
+
+            <div class="page-numbers">
+                <button *ngFor="let page of getPages()" class="page-number" [class.active]="page === currentPage"
+                    (click)="onPageChange(page)">
+                    {{ page + 1 }}
+                </button>
+            </div>
+
+            <button class="page-btn" [disabled]="currentPage === totalPages - 1"
+                (click)="onPageChange(currentPage + 1)">
+                Sau &raquo;
+            </button>
         </div>
     </section>
 </div>
