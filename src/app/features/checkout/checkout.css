@@ -144,6 +144,51 @@
     font-weight: 600;
 }
 
+.quantity-adjustment {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0.5rem 0;
+    background: #f8fafc;
+    width: fit-content;
+    padding: 0.25rem;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.qty-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: white;
+    color: #475569;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+}
+
+.qty-btn:hover:not(:disabled) {
+    background: #3b82f6;
+    color: white;
+}
+
+.qty-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.qty-value {
+    font-weight: 600;
+    color: #1e293b;
+    min-width: 20px;
+    text-align: center;
+}
+
 .summary-totals {
     display: flex;
     flex-direction: column;

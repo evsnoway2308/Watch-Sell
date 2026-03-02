@@ -17,6 +17,7 @@ export class ProductDetailComponent implements OnInit {
     product?: ProductDetailResponse;
     selectedImage?: string;
     isLoading = true;
+    selectedQuantity = 1;
 
     constructor(
         private route: ActivatedRoute,
@@ -56,11 +57,34 @@ export class ProductDetailComponent implements OnInit {
         return [this.product.imageUrl, ...(this.product.images || [])];
     }
 
+    increaseQuantity(): void {
+        if (this.product && this.selectedQuantity < this.product.stock) {
+            this.selectedQuantity++;
+        }
+    }
+
+    decreaseQuantity(): void {
+        if (this.selectedQuantity > 1) {
+            this.selectedQuantity--;
+        }
+    }
+
+    onQuantityChange(event: any): void {
+        const val = parseInt(event.target.value);
+        if (isNaN(val) || val < 1) {
+            this.selectedQuantity = 1;
+        } else if (this.product && val > this.product.stock) {
+            this.selectedQuantity = this.product.stock;
+        } else {
+            this.selectedQuantity = val;
+        }
+    }
+
     addToCart(): void {
         if (!this.product) return;
-        this.cartService.addToCart(this.product.id).subscribe({
+        this.cartService.addToCart(this.product.id, this.selectedQuantity).subscribe({
             next: () => {
-                alert('Đã thêm sản phẩm vào giỏ hàng!');
+                alert('Đã thêm ' + this.selectedQuantity + ' sản phẩm vào giỏ hàng!');
             },
             error: (err) => {
                 console.error('Error adding to cart:', err);
@@ -71,7 +95,7 @@ export class ProductDetailComponent implements OnInit {
 
     buyNow(): void {
         if (!this.product) return;
-        this.cartService.addToCart(this.product.id).subscribe({
+        this.cartService.addToCart(this.product.id, this.selectedQuantity).subscribe({
             next: () => {
                 this.router.navigate(['/checkout']);
             },

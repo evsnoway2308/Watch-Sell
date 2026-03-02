@@ -1,29 +1,69 @@
 <div class="home-container">
-    <!-- Hero Section -->
+    <!-- Hero Banner Section -->
     <section class="hero-section">
-        <div class="hero-content">
-            <h1>Khám phá bộ sưu tập đồng hồ phong cách</h1>
-            <p>Nâng tầm phong cách của bạn với những mẫu đồng hồ tinh tế và đẳng cấp nhất.</p>
-            <button class="btn-primary">Mua sắm ngay</button>
+        <a routerLink="/products" class="hero-banner">
+            <img src="https://res.cloudinary.com/dm80gf6nc/image/upload/v1772437140/Pngtree_quartz_watch_promotion_season_atmospheric_1047997_ot9alk.jpg" alt="Luxury Watch Collection Banner" class="banner-img">
+            <div class="banner-overlay">
+                <div class="banner-content">
+                    <h1>Luxury Collection 2026</h1>
+                    <p>Khám phá đẳng cấp thượng lưu trong từng nhịp đập</p>
+                    <span class="banner-btn">Khám phá ngay</span>
+                </div>
+            </div>
+        </a>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="trust-container">
+            <div class="trust-item">
+                <i class="fas fa-shipping-fast"></i>
+                <div class="trust-text">
+                    <h4>Giao Hàng Miễn Phí</h4>
+                    <p>Cho tất cả đơn hàng trên 2.000.000đ</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-shield-alt"></i>
+                <div class="trust-text">
+                    <h4>Bảo Hành 5 Năm</h4>
+                    <p>Cam kết chất lượng chuẩn quốc tế</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-undo"></i>
+                <div class="trust-text">
+                    <h4>30 Ngày Đổi Trả</h4>
+                    <p>Hoàn tiền 100% nếu không hài lòng</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-headset"></i>
+                <div class="trust-text">
+                    <h4>Hỗ Trợ 24/7</h4>
+                    <p>Đội ngũ tư vấn chuyên nghiệp</p>
+                </div>
+            </div>
         </div>
     </section>
 
     <!-- Products Section -->
     <section class="products-section">
         <div class="section-header">
-            <h2>Sản phẩm của chúng tôi</h2>
-            <p>{{ totalElements }} sản phẩm được tìm thấy</p>
+            <div class="divider"></div>
+            <h2>Sản phẩm nổi bật</h2>
         </div>
 
         <div *ngIf="isLoading" class="loading-state">
             <div class="spinner"></div>
-            <p>Đang tải sản phẩm...</p>
+            <p>Đang tải bộ sưu tập sản phẩm...</p>
         </div>
 
         <div *ngIf="!isLoading && products.length > 0" class="product-grid">
             <a *ngFor="let product of products" class="product-card" [routerLink]="['/products', product.id]">
                 <div class="product-image">
-                    <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name">
+                    <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name"
+                        loading="lazy">
                     <div *ngIf="!product.available || product.stock === 0" class="badge out-of-stock">Hết hàng</div>
                 </div>
                 <div class="product-info">
@@ -32,25 +72,25 @@
                     <div class="rating">
                         <div class="stars">
                             <i *ngFor="let star of [1,2,3,4,5]" class="star"
-                                [class.filled]="star <= product.averageRating">★</i>
+                                [class.filled]="star <= (product.averageRating || 0)">★</i>
                         </div>
-                        <span class="reviews">({{ product.reviewCount || 0 }})</span>
+                        <span class="reviews" style="font-size: 0.75rem; color: #94a3b8;">({{ product.reviewCount || 0
+                            }})</span>
                     </div>
                     <div class="price-row">
                         <span class="price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</span>
+                        <div class="view-btn">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
                     </div>
                 </div>
             </a>
         </div>
 
-        <div *ngIf="!isLoading && products.length === 0" class="empty-state">
-            <p>Không tìm thấy sản phẩm nào.</p>
-        </div>
-
         <!-- Pagination -->
         <div *ngIf="totalPages > 1" class="pagination">
             <button class="page-btn" [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
-                &laquo; Trước
+                <i class="fas fa-chevron-left"></i> &nbsp; Trước
             </button>
 
             <div class="page-numbers">
@@ -62,7 +102,7 @@
 
             <button class="page-btn" [disabled]="currentPage === totalPages - 1"
                 (click)="onPageChange(currentPage + 1)">
-                Sau &raquo;
+                Sau &nbsp; <i class="fas fa-chevron-right"></i>
             </button>
         </div>
     </section>

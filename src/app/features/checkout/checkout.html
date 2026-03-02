@@ -70,7 +70,14 @@
                         </div>
                         <div class="item-info">
                             <h3>{{item.productName}}</h3>
-                            <p>Số lượng: {{item.quantity}}</p>
+                            <div class="quantity-adjustment">
+                                <button type="button" class="qty-btn"
+                                    (click)="onQuantityChange(item.productId, item.quantity - 1)"
+                                    [disabled]="item.quantity <= 1">-</button>
+                                <span class="qty-value">{{item.quantity}}</span>
+                                <button type="button" class="qty-btn"
+                                    (click)="onQuantityChange(item.productId, item.quantity + 1)">+</button>
+                            </div>
                             <p class="price">{{item.productPrice | currency:'VND':'symbol':'1.0-0'}}</p>
                         </div>
                     </div>

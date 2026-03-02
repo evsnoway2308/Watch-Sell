@@ -56,6 +56,20 @@ export class CheckoutComponent implements OnInit {
         return this.cart.items.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
     }
 
+    onQuantityChange(productId: number, newQuantity: number): void {
+        if (newQuantity < 1) return;
+
+        this.cartService.updateQuantity(productId, newQuantity).subscribe({
+            next: () => {
+                this.loadCart();
+            },
+            error: (err) => {
+                console.error('Error updating quantity in checkout:', err);
+                alert('Có lỗi xảy ra khi cập nhật số lượng.');
+            }
+        });
+    }
+
     onSubmit(): void {
         if (this.checkoutForm.invalid || !this.cart) return;
 
