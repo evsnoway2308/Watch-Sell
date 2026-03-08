@@ -4,6 +4,8 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { ProductService } from '../../../core/services/product.service';
 import { CartService } from '../../../core/services/cart.service';
 import { ProductDetailResponse } from '../../../core/model/product-detail.model';
+import { ModalService } from '../../../core/services/modal.service';
+import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 
 @Component({
@@ -22,6 +24,8 @@ export class ProductDetailComponent implements OnInit {
         private route: ActivatedRoute,
         private productService: ProductService,
         private cartService: CartService,
+        private modalService: ModalService,
+        private toastr: ToastrService,
         private router: Router
     ) { }
 
@@ -60,11 +64,15 @@ export class ProductDetailComponent implements OnInit {
         if (!this.product) return;
         this.cartService.addToCart(this.product.id).subscribe({
             next: () => {
-                alert('Đã thêm sản phẩm vào giỏ hàng!');
+                this.toastr.success('Đã thêm sản phẩm vào giỏ hàng!', 'Thành công', {
+                    timeOut: 3000,
+                    progressBar: true,
+                    positionClass: 'toast-bottom-right'
+                });
             },
             error: (err) => {
                 console.error('Error adding to cart:', err);
-                alert('Có lỗi xảy ra khi thêm vào giỏ hàng.');
+                this.toastr.error('Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại.');
             }
         });
     }
@@ -77,7 +85,7 @@ export class ProductDetailComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Error in Buy Now:', err);
-                alert('Có lỗi xảy ra khi xử lý mua hàng.');
+                this.toastr.error('Có lỗi xảy ra khi xử lý mua hàng.');
             }
         });
     }

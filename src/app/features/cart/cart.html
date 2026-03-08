@@ -1,8 +1,8 @@
 <div class="cart-container">
     <div class="cart-header animate-fade-in-down">
         <h1>Giỏ hàng của bạn</h1>
-        <p *ngIf="cartData && cartData.items.length > 0">
-            Bạn đang có <strong>{{ cartData.items.length }}</strong> dòng sản phẩm được chọn
+        <p *ngIf="cartService.itemCount() > 0">
+            Bạn đang có <strong>{{ cartService.itemCount() }}</strong> dòng sản phẩm được chọn
         </p>
     </div>
 

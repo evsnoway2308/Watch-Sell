@@ -69,4 +69,8 @@ export class CartService {
             tap(() => this.cartSignal.set(null))
         );
     }
+
+    resetCart(): void {
+        this.cartSignal.set(null);
+    }
 }

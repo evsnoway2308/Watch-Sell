@@ -2,6 +2,7 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../../../core/services/user.service';
+import { ModalService } from '../../../../core/services/modal.service';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
@@ -14,6 +15,7 @@ import { ToastrService } from 'ngx-toastr';
 export class AdminUserListComponent implements OnInit {
     private userService = inject(UserService);
     private toastr = inject(ToastrService);
+    private modalService = inject(ModalService);
 
     users = signal<any[]>([]);
     totalElements = signal(0);
@@ -73,11 +75,18 @@ export class AdminUserListComponent implements OnInit {
         this.loadUsers();
     }
 
-    toggleStatus(user: any) {
+    async toggleStatus(user: any) {
         const newStatus = user.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
         const actionText = newStatus === 'ACTIVE' ? 'mở khóa' : 'khóa';
 
-        if (confirm(`Bạn có chắc muốn ${actionText} tài khoản này?`)) {
+        const confirmed = await this.modalService.confirm({
+            title: 'Xác nhận thay đổi',
+            message: `Bạn có chắc muốn ${actionText} tài khoản này?`,
+            confirmText: 'Đồng ý',
+            cancelText: 'Hủy'
+        });
+
+        if (confirmed) {
             this.userService.updateUserStatus(user.id, newStatus).subscribe({
                 next: () => {
                     this.toastr.success(`Đã ${actionText} tài khoản thành công`);
