@@ -17,7 +17,7 @@ export class CartService {
     itemCount = computed(() => {
         const cart = this.cartSignal();
         if (!cart || !cart.items) return 0;
-        return cart.items.reduce((sum, item) => sum + item.quantity, 0);
+        return cart.items.length;
     });
 
     constructor(private http: HttpClient) {
