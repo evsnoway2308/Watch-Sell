@@ -44,10 +44,12 @@ export class CartComponent implements OnInit {
 
     async removeItem(productId: number): Promise<void> {
         const confirmed = await this.modalService.confirm({
-            title: 'Xóa sản phẩm',
-            message: 'Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng không?',
+            title: 'Xác nhận xóa',
+            message: 'Bạn có chắc chắn muốn nói lời tạm biệt với sản phẩm tuyệt vời này không?',
             confirmText: 'Xóa ngay',
-            cancelText: 'Hủy'
+            cancelText: 'Giữ lại',
+            variant: 'danger',
+            icon: 'fas fa-trash-alt'
         });
 
         if (confirmed) {

@@ -6,6 +6,8 @@ export interface ModalConfig {
     confirmText?: string;
     cancelText?: string;
     type?: 'confirm' | 'alert';
+    variant?: 'primary' | 'danger' | 'warning' | 'success';
+    icon?: string;
 }
 
 @Injectable({
@@ -24,7 +26,8 @@ export class ModalService {
             ...config,
             confirmText: config.confirmText || 'Xác nhận',
             cancelText: config.cancelText || 'Hủy',
-            type: 'confirm'
+            type: 'confirm',
+            variant: config.variant || 'primary'
         });
         this.isOpenSignal.set(true);
 
@@ -37,7 +40,8 @@ export class ModalService {
         this.configSignal.set({
             ...config,
             confirmText: config.confirmText || 'Đóng',
-            type: 'alert'
+            type: 'alert',
+            variant: config.variant || 'primary'
         });
         this.isOpenSignal.set(true);
 

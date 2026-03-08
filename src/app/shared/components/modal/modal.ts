@@ -19,4 +19,14 @@ export class ModalComponent {
     onCancel() {
         this.modalService.close(false);
     }
+
+    getDefaultIcon(): string {
+        const variant = this.modalService.config()?.variant;
+        switch (variant) {
+            case 'danger': return 'fas fa-exclamation-triangle';
+            case 'warning': return 'fas fa-alert';
+            case 'success': return 'fas fa-check-circle';
+            default: return 'fas fa-info-circle';
+        }
+    }
 }
