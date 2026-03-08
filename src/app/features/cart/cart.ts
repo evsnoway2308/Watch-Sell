@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
-import { CartResponse, CartItemResponse } from '../../core/model/cart.model';
+import { ModalService } from '../../core/services/modal.service';
+import { CartResponse } from '../../core/model/cart.model';
 
 @Component({
     selector: 'app-cart',
@@ -15,7 +16,10 @@ export class CartComponent implements OnInit {
     cartData: CartResponse | null = null;
     isLoading = false;
 
-    constructor(public cartService: CartService) { }
+    cartService = inject(CartService);
+    modalService = inject(ModalService);
+
+    constructor() { }
 
     ngOnInit(): void {
         this.isLoading = true;
@@ -38,8 +42,17 @@ export class CartComponent implements OnInit {
         });
     }
 
-    removeItem(productId: number): void {
-        if (confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) {
+    async removeItem(productId: number): Promise<void> {
+        const confirmed = await this.modalService.confirm({
+            title: 'Xác nhận xóa',
+            message: 'Bạn có chắc chắn muốn nói lời tạm biệt với sản phẩm tuyệt vời này không?',
+            confirmText: 'Xóa ngay',
+            cancelText: 'Giữ lại',
+            variant: 'danger',
+            icon: 'fas fa-trash-alt'
+        });
+
+        if (confirmed) {
             this.cartService.removeFromCart(productId).subscribe(() => {
                 this.refreshCart();
             });

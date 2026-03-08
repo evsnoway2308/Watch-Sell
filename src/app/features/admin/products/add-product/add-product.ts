@@ -4,6 +4,7 @@ import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormArray } fr
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { ProductService } from '../../../../core/services/product.service';
 import { CategoryService } from '../../../../core/services/category.service';
+import { ModalService } from '../../../../core/services/modal.service';
 import { Category } from '../../../../core/model/category.model';
 
 @Component({
@@ -25,6 +26,7 @@ export class AddProductComponent implements OnInit {
         private fb: FormBuilder,
         private productService: ProductService,
         private categoryService: CategoryService,
+        private modalService: ModalService,
         private router: Router,
         private route: ActivatedRoute
     ) {
@@ -77,8 +79,12 @@ export class AddProductComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Error loading product details:', err);
-                alert('Không thể tải thông tin sản phẩm.');
-                this.router.navigate(['/admin/products']);
+                this.modalService.alert({
+                    title: 'Lỗi tải dữ liệu',
+                    message: 'Không thể tải thông tin sản phẩm.'
+                }).then(() => {
+                    this.router.navigate(['/admin/products']);
+                });
             }
         });
     }
@@ -117,7 +123,10 @@ export class AddProductComponent implements OnInit {
                 },
                 error: (err) => {
                     console.error('Error uploading image:', err);
-                    alert('Lỗi khi tải ảnh lên.');
+                    this.modalService.alert({
+                        title: 'Lỗi tải ảnh',
+                        message: 'Lỗi khi tải ảnh lên. Vui lòng thử lại.'
+                    });
                     this.isLoading = false;
                 }
             });
@@ -134,24 +143,38 @@ export class AddProductComponent implements OnInit {
         if (this.isEditMode && this.productId) {
             this.productService.updateProduct(this.productId, this.productForm.value).subscribe({
                 next: () => {
-                    alert('Cập nhật sản phẩm thành công!');
-                    this.router.navigate(['/admin/products']);
+                    this.modalService.alert({
+                        title: 'Thành công',
+                        message: 'Cập nhật sản phẩm thành công!'
+                    }).then(() => {
+                        this.router.navigate(['/admin/products']);
+                    });
                 },
                 error: (err) => {
                     console.error('Error updating product:', err);
-                    alert('Có lỗi xảy ra khi cập nhật sản phẩm.');
+                    this.modalService.alert({
+                        title: 'Lỗi',
+                        message: 'Có lỗi xảy ra khi cập nhật sản phẩm.'
+                    });
                     this.isLoading = false;
                 }
             });
         } else {
             this.productService.addProduct(this.productForm.value).subscribe({
                 next: () => {
-                    alert('Thêm sản phẩm thành công!');
-                    this.router.navigate(['/admin/products']);
+                    this.modalService.alert({
+                        title: 'Thành công',
+                        message: 'Thêm sản phẩm thành công!'
+                    }).then(() => {
+                        this.router.navigate(['/admin/products']);
+                    });
                 },
                 error: (err) => {
                     console.error('Error adding product:', err);
-                    alert('Có lỗi xảy ra khi thêm sản phẩm.');
+                    this.modalService.alert({
+                        title: 'Lỗi',
+                        message: 'Có lỗi xảy ra khi thêm sản phẩm.'
+                    });
                     this.isLoading = false;
                 }
             });

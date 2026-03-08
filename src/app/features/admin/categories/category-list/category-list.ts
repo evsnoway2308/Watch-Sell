@@ -2,14 +2,15 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CategoryService } from '../../../../core/services/category.service';
+import { ModalService } from '../../../../core/services/modal.service';
 import { Category } from '../../../../core/model/category.model';
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-    selector: 'app-category-list',
-    standalone: true,
-    imports: [CommonModule, RouterLink],
-    template: `
+  selector: 'app-category-list',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  template: `
     <div class="admin-categories">
       <div class="page-header">
         <div class="header-info">
@@ -55,7 +56,7 @@ import { ToastrService } from 'ngx-toastr';
       </div>
     </div>
   `,
-    styles: [`
+  styles: [`
     .admin-categories {
       display: flex;
       flex-direction: column;
@@ -157,37 +158,45 @@ import { ToastrService } from 'ngx-toastr';
   `]
 })
 export class CategoryListComponent implements OnInit {
-    private categoryService = inject(CategoryService);
-    private toastr = inject(ToastrService);
+  private categoryService = inject(CategoryService);
+  private toastr = inject(ToastrService);
+  private modalService = inject(ModalService);
 
-    categories: Category[] = [];
+  categories: Category[] = [];
 
-    ngOnInit(): void {
-        this.loadCategories();
-    }
+  ngOnInit(): void {
+    this.loadCategories();
+  }
 
-    loadCategories(): void {
-        this.categoryService.getCategories().subscribe({
-            next: (data) => this.categories = data,
-            error: (err) => {
-                console.error('Error loading categories:', err);
-                this.toastr.error('Không thể tải danh sách danh mục');
-            }
-        });
-    }
+  loadCategories(): void {
+    this.categoryService.getCategories().subscribe({
+      next: (data) => this.categories = data,
+      error: (err) => {
+        console.error('Error loading categories:', err);
+        this.toastr.error('Không thể tải danh sách danh mục');
+      }
+    });
+  }
 
-    onDelete(category: Category): void {
-        if (confirm(`Bạn có chắc muốn xóa danh mục "${category.name}"?`)) {
-            this.categoryService.deleteCategory(category.id).subscribe({
-                next: () => {
-                    this.toastr.success('Xóa danh mục thành công');
-                    this.loadCategories();
-                },
-                error: (err) => {
-                    console.error('Error deleting category:', err);
-                    this.toastr.error('Lỗi khi xóa danh mục. Có thể vẫn còn sản phẩm thuộc danh mục này.');
-                }
-            });
+  async onDelete(category: Category) {
+    const confirmed = await this.modalService.confirm({
+      title: 'Xác nhận xóa',
+      message: `Bạn có chắc muốn xóa danh mục "${category.name}"?`,
+      confirmText: 'Xóa',
+      cancelText: 'Hủy'
+    });
+
+    if (confirmed) {
+      this.categoryService.deleteCategory(category.id).subscribe({
+        next: () => {
+          this.toastr.success('Xóa danh mục thành công');
+          this.loadCategories();
+        },
+        error: (err) => {
+          console.error('Error deleting category:', err);
+          this.toastr.error('Lỗi khi xóa danh mục. Có thể vẫn còn sản phẩm thuộc danh mục này.');
         }
+      });
     }
+  }
 }

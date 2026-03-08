@@ -4,6 +4,7 @@ import { RouterLink, Router, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { CategoryService } from '../../../core/services/category.service';
+import { CartService } from '../../../core/services/cart.service';
 import { Category } from '../../../core/model/category.model';
 
 @Component({
@@ -17,6 +18,7 @@ export class HeaderComponent implements OnInit {
     authService = inject(AuthService);
     userService = inject(UserService);
     categoryService = inject(CategoryService);
+    cartService = inject(CartService);
     router = inject(Router);
 
     get isLoggedIn(): boolean {

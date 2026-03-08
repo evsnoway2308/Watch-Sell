@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ProductService } from '../../../../core/services/product.service';
+import { ModalService } from '../../../../core/services/modal.service';
 import { ProductResponse } from '../../../../core/model/product.model';
 import { Page } from '../../../../core/model/pagination.model';
 
@@ -24,6 +25,7 @@ export class AdminProductListComponent implements OnInit, OnDestroy {
 
     constructor(
         private productService: ProductService,
+        private modalService: ModalService,
         private router: Router,
         private route: ActivatedRoute
     ) { }
@@ -76,20 +78,34 @@ export class AdminProductListComponent implements OnInit, OnDestroy {
         return pages;
     }
 
-    deleteProduct(id: number): void {
+    async deleteProduct(id: number): Promise<void> {
         console.log('Delete button clicked for product ID:', id);
-        if (confirm('Bạn có chắc chắn muốn xóa sản phẩm này?')) {
+
+        const confirmed = await this.modalService.confirm({
+            title: 'Xác nhận xóa',
+            message: 'Bạn có chắc chắn muốn xóa sản phẩm này không? Thao tác này không thể hoàn tác.',
+            confirmText: 'Xóa ngay',
+            cancelText: 'Hủy'
+        });
+
+        if (confirmed) {
             this.isLoading = true;
             console.log('Confirm deletion for ID:', id);
             this.productService.deleteProduct(id).subscribe({
                 next: () => {
                     console.log('Delete successful for ID:', id);
-                    alert('Xóa sản phẩm thành công!');
+                    this.modalService.alert({
+                        title: 'Thành công',
+                        message: 'Sản phẩm đã được xóa khỏi hệ thống.'
+                    });
                     this.loadProducts();
                 },
                 error: (err) => {
                     console.error('Error deleting product:', err);
-                    alert('Có lỗi xảy ra khi xóa sản phẩm.');
+                    this.modalService.alert({
+                        title: 'Lỗi',
+                        message: 'Có lỗi xảy ra khi xóa sản phẩm. Vui lòng thử lại sau.'
+                    });
                     this.isLoading = false;
                 }
             });

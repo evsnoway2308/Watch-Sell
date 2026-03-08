@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } 
 import { Router, RouterModule } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
+import { ModalService } from '../../core/services/modal.service';
 import { CartResponse } from '../../core/model/cart.model';
 import { Order } from '../../core/model/order.model';
 
@@ -23,6 +24,7 @@ export class CheckoutComponent implements OnInit {
         private fb: FormBuilder,
         private cartService: CartService,
         private orderService: OrderService,
+        private modalService: ModalService,
         private router: Router
     ) {
         this.checkoutForm = this.fb.group({
@@ -79,13 +81,20 @@ export class CheckoutComponent implements OnInit {
         this.orderService.createOrder(request).subscribe({
             next: (order) => {
                 this.isLoading = false;
-                alert('Đặt hàng thành công! Cảm ơn bạn đã mua sắm.');
-                this.router.navigate(['/']);
+                this.modalService.alert({
+                    title: 'Đặt hàng thành công',
+                    message: 'Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi!'
+                }).then(() => {
+                    this.router.navigate(['/']);
+                });
             },
             error: (err) => {
                 this.isLoading = false;
                 console.error('Error creating order:', err);
-                alert('Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại.');
+                this.modalService.alert({
+                    title: 'Lỗi đặt hàng',
+                    message: 'Có lỗi xảy ra khi đặt hàng. Vui lòng kiểm tra lại thông tin và thử lại.'
+                });
             }
         });
     }

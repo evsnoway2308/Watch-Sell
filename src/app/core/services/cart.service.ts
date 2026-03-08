@@ -17,7 +17,7 @@ export class CartService {
     itemCount = computed(() => {
         const cart = this.cartSignal();
         if (!cart || !cart.items) return 0;
-        return cart.items.reduce((sum, item) => sum + item.quantity, 0);
+        return cart.items.length;
     });
 
     constructor(private http: HttpClient) {
@@ -68,5 +68,9 @@ export class CartService {
         return this.http.delete(this.apiUrl + '/clear', { responseType: 'text' }).pipe(
             tap(() => this.cartSignal.set(null))
         );
+    }
+
+    resetCart(): void {
+        this.cartSignal.set(null);
     }
 }

@@ -18,6 +18,9 @@
       <a routerLink="/cart" class="action-btn">
         <div class="icon-wrapper">
           <i class="fas fa-shopping-cart"></i>
+          <span class="cart-badge" *ngIf="cartService.itemCount() > 0">
+            {{ cartService.itemCount() }}
+          </span>
         </div>
       </a>
 

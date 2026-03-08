@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environment/environment';
 import { tap } from 'rxjs';
 import { Router } from '@angular/router';
+import { CartService } from './cart.service';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable({ providedIn: 'root' })
@@ -13,7 +14,11 @@ export class AuthService {
   // 2. Khởi tạo mặc định là false để tránh lỗi trên Server
   isLoggedIn = signal<boolean>(false);
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private cartService: CartService
+  ) {
     // 3. Chỉ kiểm tra token nếu đang ở trình duyệt
     if (isPlatformBrowser(this.platformId)) {
       this.isLoggedIn.set(this.hasToken());
@@ -36,6 +41,7 @@ export class AuthService {
           localStorage.removeItem('refresh_token');
           localStorage.removeItem('user_name');
           localStorage.removeItem('user_avatar');
+          this.cartService.resetCart();
           return false;
         }
         return true;
@@ -54,6 +60,7 @@ export class AuthService {
           localStorage.setItem('refresh_token', response.refreshToken);
         }
         this.isLoggedIn.set(true);
+        this.cartService.loadCart();
       })
     );
   }
@@ -70,6 +77,7 @@ export class AuthService {
           localStorage.setItem('refresh_token', response.refreshToken);
         }
         this.isLoggedIn.set(true);
+        this.cartService.loadCart();
       })
     );
   }
@@ -78,6 +86,7 @@ export class AuthService {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem('access_token');
       localStorage.removeItem('refresh_token');
+      this.cartService.resetCart();
     }
     this.isLoggedIn.set(false);
     this.router.navigate(['/login']);

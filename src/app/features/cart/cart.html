@@ -1,59 +1,118 @@
 <div class="cart-container">
-    <div class="cart-header">
+    <div class="cart-header animate-fade-in-down">
         <h1>Giỏ hàng của bạn</h1>
-        <p *ngIf="cartData && cartData.items.length > 0">Bạn có {{ cartData.items.length }} sản phẩm trong giỏ hàng</p>
+        <p *ngIf="cartService.itemCount() > 0">
+            Bạn đang có <strong>{{ cartService.itemCount() }}</strong> dòng sản phẩm được chọn
+        </p>
     </div>
 
+    <!-- Loading State -->
     <div *ngIf="isLoading" class="loading-state">
         <div class="spinner"></div>
-        <p>Đang tải giỏ hàng...</p>
+        <p>Đang chuẩn bị giỏ hàng tuyệt vời dành cho bạn...</p>
     </div>
 
-    <div *ngIf="!isLoading && (!cartData || cartData.items.length === 0)" class="empty-cart">
-        <div class="empty-icon">🛒</div>
-        <h2>Giỏ hàng trống</h2>
-        <p>Có vẻ như bạn chưa thêm sản phẩm nào vào giỏ hàng.</p>
-        <button class="btn-primary btn-continue-shopping" routerLink="/">Tiếp tục mua sắm</button>
+    <!-- Empty State -->
+    <div *ngIf="!isLoading && (!cartData || cartData.items.length === 0)" class="empty-cart animate-fade-in">
+        <div class="empty-icon-wrapper">🛍️</div>
+        <h2>Giỏ hàng còn trống</h2>
+        <p>Những chiếc đồng hồ sang trọng và đẳng cấp thực sự đang chờ đợi bạn. Bắt đầu hành trình mua sắm ngay hôm nay!
+        </p>
+        <a routerLink="/" class="btn-primary-gradient">Tiếp tục mua sắm</a>
     </div>
 
-    <div *ngIf="!isLoading && cartData && cartData.items.length > 0" class="cart-content">
-        <div class="cart-items">
-            <div *ngFor="let item of cartData.items" class="cart-item card">
-                <div class="item-image">
+    <!-- Cart Content -->
+    <div *ngIf="!isLoading && cartData && cartData.items.length > 0" class="cart-content animate-fade-in-up">
+        <div class="cart-items-wrapper">
+            <div *ngFor="let item of cartData.items" class="cart-item">
+                <div class="item-image" [routerLink]="['/products', item.productId]">
                     <img [src]="item.productImageUrl || 'assets/placeholder-product.png'" [alt]="item.productName">
                 </div>
+
                 <div class="item-details">
-                    <h3 [routerLink]="['/products', item.productId]">{{ item.productName }}</h3>
-                    <p class="price">{{ item.productPrice | currency:'VND':'symbol':'1.0-0' }}</p>
+                    <div class="item-info">
+                        <h3 [routerLink]="['/products', item.productId]" [title]="item.productName">{{ item.productName
+                            }}</h3>
+                        <p class="item-price" [title]="item.productPrice | currency:'VND':'symbol':'1.0-0'">
+                            {{ item.productPrice | currency:'VND':'symbol':'1.0-0' }}
+                        </p>
+                    </div>
 
                     <div class="item-actions">
                         <div class="quantity-control">
                             <button (click)="updateQuantity(item.productId, item.quantity - 1)"
-                                [disabled]="item.quantity <= 1">-</button>
+                                [disabled]="item.quantity <= 1" title="Giảm số lượng">
+                                <i class="fas fa-minus"></i>
+                            </button>
                             <span>{{ item.quantity }}</span>
-                            <button (click)="updateQuantity(item.productId, item.quantity + 1)">+</button>
+                            <button (click)="updateQuantity(item.productId, item.quantity + 1)" title="Tăng số lượng">
+                                <i class="fas fa-plus"></i>
+                            </button>
                         </div>
-                        <button class="btn-remove" (click)="removeItem(item.productId)">Xóa</button>
+                        <button class="btn-remove" (click)="removeItem(item.productId)" title="Xóa khỏi giỏ hàng">
+                            <i class="fas fa-trash-alt"></i>
+                            <span>Xóa</span>
+                        </button>
                     </div>
                 </div>
-                <div class="item-total">
+
+                <div class="item-total" [title]="item.subTotal | currency:'VND':'symbol':'1.0-0'">
                     {{ item.subTotal | currency:'VND':'symbol':'1.0-0' }}
                 </div>
             </div>
         </div>
 
-        <div class="cart-summary card">
+        <div class="cart-summary">
             <h2>Tóm tắt đơn hàng</h2>
-            <div class="summary-row">
-                <span>Tạm tính</span>
-                <span>{{ cartData.totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+            <div class="summary-details">
+                <div class="summary-row">
+                    <span>Tạm tính</span>
+                    <span [title]="cartData.totalAmount | currency:'VND':'symbol':'1.0-0'">
+                        {{ cartData.totalAmount | currency:'VND':'symbol':'1.0-0' }}
+                    </span>
+                </div>
+                <div class="summary-row">
+                    <span>Giao hàng</span>
+                    <span style="color: #10b981; font-weight: 600;">Miễn phí</span>
+                </div>
+                <div class="summary-row">
+                    <span>Mã giảm giá</span>
+                    <span>Áp dụng ở bước tiếp theo</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Tổng tiền</span>
+                    <span [title]="cartData.totalAmount | currency:'VND':'symbol':'1.0-0'">
+                        {{ cartData.totalAmount | currency:'VND':'symbol':'1.0-0' }}
+                    </span>
+                </div>
             </div>
-            <div class="summary-row total">
-                <span>Tổng cộng</span>
-                <span>{{ cartData.totalAmount | currency:'VND':'symbol':'1.0-0' }}</span>
+
+            <button class="btn-checkout" routerLink="/checkout">
+                Thanh toán an toàn <i class="fas fa-shield-alt"></i>
+            </button>
+
+            <button class="btn-continue-shopping" routerLink="/">
+                <i class="fas fa-arrow-left" style="margin-right: 8px;"></i> Trở về cửa hàng
+            </button>
+
+            <div class="trust-badges">
+                <div class="trust-item">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Chính hãng 100%</span>
+                </div>
+                <div class="trust-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Giao hàng nhanh</span>
+                </div>
+                <div class="trust-item">
+                    <i class="fas fa-lock"></i>
+                    <span>Bảo mật 256-bit</span>
+                </div>
+                <div class="trust-item">
+                    <i class="fas fa-undo"></i>
+                    <span>Đổi trả 30 ngày</span>
+                </div>
             </div>
-            <button class="btn-checkout btn-primary" routerLink="/checkout">Thanh toán ngay</button>
-            <button class="btn-continue-shopping" routerLink="/">Tiếp tục mua sắm</button>
         </div>
     </div>
 </div>
