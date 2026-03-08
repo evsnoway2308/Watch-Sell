@@ -6,7 +6,7 @@
         </nav>
     </div>
 
-    <div class="checkout-content" *ngIf="cart">
+    <div class="checkout-content" *ngIf="directItem || (cart && cart.items.length > 0)">
         <div class="checkout-form-section">
             <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
                 <div class="card premium-card">
@@ -64,23 +64,40 @@
             <div class="card premium-card">
                 <h2>Tóm tắt đơn hàng</h2>
                 <div class="order-items">
-                    <div class="order-item" *ngFor="let item of cart.items">
+                    <!-- Direct Item Display -->
+                    <div class="order-item" *ngIf="directItem">
                         <div class="item-img">
-                            <img [src]="item.productImageUrl" [alt]="item.productName">
+                            <img [src]="directItem.imageUrl" [alt]="directItem.name">
                         </div>
                         <div class="item-info">
-                            <h3>{{item.productName}}</h3>
-                            <div class="quantity-adjustment">
-                                <button type="button" class="qty-btn"
-                                    (click)="onQuantityChange(item.productId, item.quantity - 1)"
-                                    [disabled]="item.quantity <= 1">-</button>
-                                <span class="qty-value">{{item.quantity}}</span>
-                                <button type="button" class="qty-btn"
-                                    (click)="onQuantityChange(item.productId, item.quantity + 1)">+</button>
+                            <h3>{{directItem.name}}</h3>
+                            <div class="quantity-info">
+                                <span>Số lượng: 1</span>
                             </div>
-                            <p class="price">{{item.productPrice | currency:'VND':'symbol':'1.0-0'}}</p>
+                            <p class="price">{{directItem.price | currency:'VND':'symbol':'1.0-0'}}</p>
                         </div>
                     </div>
+
+                    <!-- Cart Items Display -->
+                    <ng-container *ngIf="!directItem && cart">
+                        <div class="order-item" *ngFor="let item of cart.items">
+                            <div class="item-img">
+                                <img [src]="item.productImageUrl" [alt]="item.productName">
+                            </div>
+                            <div class="item-info">
+                                <h3>{{item.productName}}</h3>
+                                <div class="quantity-adjustment">
+                                    <button type="button" class="qty-btn"
+                                        (click)="onQuantityChange(item.productId, item.quantity - 1)"
+                                        [disabled]="item.quantity <= 1">-</button>
+                                    <span class="qty-value">{{item.quantity}}</span>
+                                    <button type="button" class="qty-btn"
+                                        (click)="onQuantityChange(item.productId, item.quantity + 1)">+</button>
+                                </div>
+                                <p class="price">{{item.productPrice | currency:'VND':'symbol':'1.0-0'}}</p>
+                            </div>
+                        </div>
+                    </ng-container>
                 </div>
 
                 <div class="summary-totals">
@@ -102,7 +119,7 @@
         </div>
     </div>
 
-    <div *ngIf="!cart && !isLoading" class="empty-state">
+    <div *ngIf="!directItem && !cart && !isLoading" class="empty-state">
         <p>Đang tải thông tin đơn hàng...</p>
     </div>
 </div>

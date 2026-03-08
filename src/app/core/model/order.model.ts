@@ -3,6 +3,7 @@ export interface OrderRequest {
     phoneNumber: string;
     notes: string;
     paymentMethod: string;
+    items?: { productId: number; quantity: number }[];
 }
 
 export interface OrderItem {

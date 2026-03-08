@@ -103,13 +103,12 @@ export class ProductDetailComponent implements OnInit {
 
     buyNow(): void {
         if (!this.product) return;
-        this.cartService.addToCart(this.product.id, this.selectedQuantity).subscribe({
-            next: () => {
-                this.router.navigate(['/checkout']);
-            },
-            error: (err) => {
-                console.error('Error in Buy Now:', err);
-                this.toastr.error('Có lỗi xảy ra khi xử lý mua hàng.');
+        this.router.navigate(['/checkout'], {
+            state: {
+                product: {
+                    ...this.product,
+                    selectedQuantity: this.selectedQuantity
+                }
             }
         });
     }

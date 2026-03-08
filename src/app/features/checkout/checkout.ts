@@ -6,7 +6,6 @@ import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { ModalService } from '../../core/services/modal.service';
 import { CartResponse } from '../../core/model/cart.model';
-import { Order } from '../../core/model/order.model';
 
 @Component({
     selector: 'app-checkout',
@@ -19,6 +18,7 @@ export class CheckoutComponent implements OnInit {
     checkoutForm: FormGroup;
     cart: CartResponse | null = null;
     isLoading = false;
+    directItem: any = null;
 
     constructor(
         private fb: FormBuilder,
@@ -27,6 +27,11 @@ export class CheckoutComponent implements OnInit {
         private modalService: ModalService,
         private router: Router
     ) {
+        const navigation = this.router.getCurrentNavigation();
+        if (navigation?.extras.state) {
+            this.directItem = navigation.extras.state['product'];
+        }
+
         this.checkoutForm = this.fb.group({
             shippingAddress: ['', Validators.required],
             phoneNumber: ['', [Validators.required, Validators.pattern(/^[0-9]{10}$/)]],
@@ -36,7 +41,9 @@ export class CheckoutComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        this.loadCart();
+        if (!this.directItem) {
+            this.loadCart();
+        }
     }
 
     loadCart(): void {
@@ -54,6 +61,9 @@ export class CheckoutComponent implements OnInit {
     }
 
     calculateTotal(): number {
+        if (this.directItem) {
+            return this.directItem.price * (this.directItem.selectedQuantity || 1);
+        }
         if (!this.cart) return 0;
         return this.cart.items.reduce((total, item) => total + (item.productPrice * item.quantity), 0);
     }
@@ -73,10 +83,24 @@ export class CheckoutComponent implements OnInit {
     }
 
     onSubmit(): void {
-        if (this.checkoutForm.invalid || !this.cart) return;
+        if (this.checkoutForm.invalid) return;
+        if (!this.directItem && (!this.cart || this.cart.items.length === 0)) return;
 
         this.isLoading = true;
-        const request = this.checkoutForm.value;
+        const formValue = this.checkoutForm.value;
+        const request: any = {
+            shippingAddress: formValue.shippingAddress,
+            phoneNumber: formValue.phoneNumber,
+            notes: formValue.notes,
+            paymentMethod: formValue.paymentMethod
+        };
+
+        if (this.directItem) {
+            request.items = [{
+                productId: this.directItem.id,
+                quantity: this.directItem.selectedQuantity || 1
+            }];
+        }
 
         this.orderService.createOrder(request).subscribe({
             next: (order) => {
