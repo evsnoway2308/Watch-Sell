@@ -88,6 +88,13 @@ export class ProductDetailComponent implements OnInit {
 
     addToCart(): void {
         if (!this.product) return;
+
+        if (!this.authService.isLoggedIn()) {
+            this.toastr.warning('Vui lòng đăng nhập để tiếp tục mua hàng.', 'Thông báo');
+            this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+            return;
+        }
+
         this.cartService.addToCart(this.product.id, this.selectedQuantity).subscribe({
             next: () => {
                 this.toastr.success('Đã thêm sản phẩm vào giỏ hàng!', 'Thành công', {
