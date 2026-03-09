@@ -2,7 +2,7 @@
     max-width: 1280px;
     margin: 2rem auto;
     padding: 0 1.5rem;
-    font-family: 'Inter', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
 
 .breadcrumb {

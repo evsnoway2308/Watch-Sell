@@ -89,7 +89,7 @@ export class ProductListComponent implements OnInit {
                 this.toastr.success(`Đã thêm ${product.name} vào giỏ hàng!`, 'Thành công', {
                     timeOut: 2000,
                     progressBar: true,
-                    positionClass: 'toast-bottom-right'
+                    positionClass: 'toast-top-right'
                 });
             },
             error: (err) => {

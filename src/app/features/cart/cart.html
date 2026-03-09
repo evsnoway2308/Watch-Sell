@@ -24,7 +24,7 @@
     <!-- Cart Content -->
     <div *ngIf="!isLoading && cartData && cartData.items.length > 0" class="cart-content animate-fade-in-up">
         <div class="cart-items-wrapper">
-            <div *ngFor="let item of cartData.items" class="cart-item">
+            <div *ngFor="let item of cartData.items; trackBy: trackByProductId" class="cart-item">
                 <div class="item-image" [routerLink]="['/products', item.productId]">
                     <img [src]="item.productImageUrl || 'assets/placeholder-product.png'" [alt]="item.productName">
                 </div>

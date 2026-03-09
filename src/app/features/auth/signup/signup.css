@@ -6,7 +6,7 @@
   align-items: center;
   background-color: #f3f4f6;
   /* Xám nhạt */
-  font-family: 'Inter', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   padding: 40px 20px;
 }
 
@@ -251,4 +251,3 @@ label {
 .text-google {
   color: #DB4437;
 }
-

@@ -2,8 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../core/services/cart.service';
-import { ModalService } from '../../core/services/modal.service';
-import { CartResponse } from '../../core/model/cart.model';
+import { CartResponse, CartItemResponse } from '../../core/model/cart.model';
 
 @Component({
     selector: 'app-cart',
@@ -17,7 +16,6 @@ export class CartComponent implements OnInit {
     isLoading = false;
 
     cartService = inject(CartService);
-    modalService = inject(ModalService);
 
     constructor() { }
 
@@ -42,24 +40,17 @@ export class CartComponent implements OnInit {
         });
     }
 
-    async removeItem(productId: number): Promise<void> {
-        const confirmed = await this.modalService.confirm({
-            title: 'Xác nhận xóa',
-            message: 'Bạn có chắc chắn muốn nói lời tạm biệt với sản phẩm tuyệt vời này không?',
-            confirmText: 'Xóa ngay',
-            cancelText: 'Giữ lại',
-            variant: 'danger',
-            icon: 'fas fa-trash-alt'
+    removeItem(productId: number): void {
+        this.cartService.removeFromCart(productId).subscribe(() => {
+            this.refreshCart();
         });
-
-        if (confirmed) {
-            this.cartService.removeFromCart(productId).subscribe(() => {
-                this.refreshCart();
-            });
-        }
     }
 
     refreshCart(): void {
         this.cartService.getCart().subscribe(cart => this.cartData = cart);
+    }
+
+    trackByProductId(index: number, item: CartItemResponse): number {
+        return item.productId;
     }
 }
