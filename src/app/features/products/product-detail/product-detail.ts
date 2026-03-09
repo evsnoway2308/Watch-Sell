@@ -7,6 +7,7 @@ import { ProductDetailResponse } from '../../../core/model/product-detail.model'
 import { ModalService } from '../../../core/services/modal.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
     selector: 'app-product-detail',
@@ -27,7 +28,8 @@ export class ProductDetailComponent implements OnInit {
         private cartService: CartService,
         private modalService: ModalService,
         private toastr: ToastrService,
-        private router: Router
+        private router: Router,
+        private authService: AuthService
     ) { }
 
     ngOnInit(): void {
@@ -103,6 +105,13 @@ export class ProductDetailComponent implements OnInit {
 
     buyNow(): void {
         if (!this.product) return;
+
+        if (!this.authService.isLoggedIn()) {
+            this.toastr.warning('Vui lòng đăng nhập để tiếp tục mua hàng.', 'Thông báo');
+            this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+            return;
+        }
+
         this.router.navigate(['/checkout'], {
             state: {
                 product: {
