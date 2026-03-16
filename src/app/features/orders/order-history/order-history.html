@@ -47,8 +47,8 @@
                         <div class="item-details">
                             <div class="item-name-row">
                                 <h4 class="item-name">{{ item.product.name }}</h4>
-                                <span class="item-price">{{ item.price | number:'1.0-0' }}</span>
                             </div>
+
                             <div class="item-meta-row">
                                 <span class="item-qty">Số lượng: {{ item.quantity }}</span>
                                 <span class="item-total">{{ (item.price * item.quantity) | number:'1.0-0' }}</span>

@@ -34,14 +34,20 @@ export class LoginComponent {
         next: () => {
 
           this.userService.getMyProfile().subscribe({
-            next: (user) => {
-              this.toastr.success(`Chào mừng trở lại, ${user.fullName}!`);
+            next: (res) => {
+              // Handle response wrapper if present
+              const user = res.result || res.data || res;
+              const displayName = user.fullName || user.name || user.username || 'Người dùng';
+              
+              this.toastr.success(`Chào mừng trở lại, ${displayName}!`);
+              
               if (typeof window !== 'undefined' && window.localStorage) {
-                localStorage.setItem('user_name', user.fullName || user.name || user.username);
+                localStorage.setItem('user_name', displayName);
                 if (user.avatar) {
                   localStorage.setItem('user_avatar', user.avatar);
                 }
               }
+
 
               if (user.role === 'ADMIN' || user.role === 'ROLE_ADMIN') {
                 this.router.navigate(['/admin/dashboard']);

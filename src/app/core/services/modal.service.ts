@@ -1,6 +1,8 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, signal, inject } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 
 export interface ModalConfig {
+
     title: string;
     message: string;
     confirmText?: string;
@@ -16,6 +18,7 @@ export interface ModalConfig {
 export class ModalService {
     private isOpenSignal = signal<boolean>(false);
     private configSignal = signal<ModalConfig | null>(null);
+    private toastr = inject(ToastrService);
     private resolveCallback: ((value: boolean) => void) | null = null;
 
     isOpen = this.isOpenSignal.asReadonly();
@@ -37,18 +40,19 @@ export class ModalService {
     }
 
     alert(config: ModalConfig): Promise<void> {
-        this.configSignal.set({
-            ...config,
-            confirmText: config.confirmText || 'Đóng',
-            type: 'alert',
-            variant: config.variant || 'primary'
-        });
-        this.isOpenSignal.set(true);
-
-        return new Promise((resolve) => {
-            this.resolveCallback = (val) => resolve();
-        });
+        const variant = config.variant || 'primary';
+        if (variant === 'danger') {
+            this.toastr.error(config.message, config.title);
+        } else if (variant === 'warning') {
+            this.toastr.warning(config.message, config.title);
+        } else if (variant === 'success') {
+            this.toastr.success(config.message, config.title);
+        } else {
+            this.toastr.info(config.message, config.title);
+        }
+        return Promise.resolve();
     }
+
 
     close(result: boolean): void {
         this.isOpenSignal.set(false);

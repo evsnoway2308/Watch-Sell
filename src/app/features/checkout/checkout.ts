@@ -77,7 +77,12 @@ export class CheckoutComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Error updating quantity in checkout:', err);
-                alert('Có lỗi xảy ra khi cập nhật số lượng.');
+                this.modalService.alert({
+                    title: 'Lỗi',
+                    message: 'Có lỗi xảy ra khi cập nhật số lượng.',
+                    variant: 'danger'
+                });
+
             }
         });
     }
@@ -108,7 +113,7 @@ export class CheckoutComponent implements OnInit {
 
                 let successMessage = 'Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi!';
                 if (formValue.paymentMethod === 'COD') {
-                    successMessage = 'Đơn hàng của bạn đã được đặt thành công! Bạn vui lòng thanh toán bằng tiền mặt khi nhận hàng nhé. Cảm ơn bạn!';
+                    successMessage = 'Đơn hàng của bạn đã được đặt thành công!';
                 }
 
                 this.modalService.alert({

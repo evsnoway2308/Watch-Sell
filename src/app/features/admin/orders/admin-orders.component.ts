@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AdminOrderService, Order } from '../../../core/services/admin-order.service';
+import { ToastrService } from 'ngx-toastr';
+
 
 @Component({
     selector: 'app-admin-orders',
@@ -17,7 +19,11 @@ export class AdminOrdersComponent implements OnInit {
 
     statusOptions = ['PENDING', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
 
-    constructor(private adminOrderService: AdminOrderService) { }
+    constructor(
+        private adminOrderService: AdminOrderService,
+        private toastr: ToastrService
+    ) { }
+
 
     ngOnInit(): void {
         this.loadOrders();
@@ -48,7 +54,8 @@ export class AdminOrdersComponent implements OnInit {
                 // Optional: Show success toast
             },
             error: (err) => {
-                alert('Cập nhật trạng thái thất bại.');
+                this.toastr.error('Cập nhật trạng thái thất bại.');
+
                 console.error(err);
             }
         });
