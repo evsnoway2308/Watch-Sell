@@ -122,4 +122,14 @@
     <div *ngIf="!directItem && !cart && !isLoading" class="empty-state">
         <p>Đang tải thông tin đơn hàng...</p>
     </div>
+
+    <!-- MoMo Payment Simulation Modal -->
+    <app-momo-payment 
+        *ngIf="showMomoSimulation"
+        [orderId]="createdOrder?.id"
+        [amount]="calculateTotal()"
+        [qrImage]="'assets/images/momo-qr.png'"
+        (confirmed)="onMomoConfirmed()"
+        (cancelled)="onMomoCancelled()">
+    </app-momo-payment>
 </div>

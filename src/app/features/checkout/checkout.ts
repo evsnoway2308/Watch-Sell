@@ -6,11 +6,12 @@ import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { ModalService } from '../../core/services/modal.service';
 import { CartResponse } from '../../core/model/cart.model';
+import { MomoPaymentComponent } from './momo-payment/momo-payment.component';
 
 @Component({
     selector: 'app-checkout',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MomoPaymentComponent],
     templateUrl: './checkout.html',
     styleUrls: ['./checkout.css']
 })
@@ -19,6 +20,9 @@ export class CheckoutComponent implements OnInit {
     cart: CartResponse | null = null;
     isLoading = false;
     directItem: any = null;
+    
+    showMomoSimulation = false;
+    createdOrder: any = null;
 
     constructor(
         private fb: FormBuilder,
@@ -108,22 +112,17 @@ export class CheckoutComponent implements OnInit {
         }
 
         this.orderService.createOrder(request).subscribe({
-            next: (order) => {
+            next: (order: any) => {
                 this.isLoading = false;
+                this.createdOrder = order;
 
-                let successMessage = 'Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi!';
-                if (formValue.paymentMethod === 'COD') {
-                    successMessage = 'Đơn hàng của bạn đã được đặt thành công!';
+                if (formValue.paymentMethod === 'BANK_TRANSFER') {
+                    this.showMomoSimulation = true;
+                } else {
+                    this.handleOrderSuccess();
                 }
-
-                this.modalService.alert({
-                    title: 'Đặt hàng thành công',
-                    message: successMessage
-                }).then(() => {
-                    this.router.navigate(['/']);
-                });
             },
-            error: (err) => {
+            error: (err: any) => {
                 this.isLoading = false;
                 console.error('Error creating order:', err);
                 this.modalService.alert({
@@ -131,6 +130,37 @@ export class CheckoutComponent implements OnInit {
                     message: 'Có lỗi xảy ra khi đặt hàng. Vui lòng kiểm tra lại thông tin và thử lại.'
                 });
             }
+        });
+    }
+
+    handleOrderSuccess() {
+        this.modalService.alert({
+            title: 'Đặt hàng thành công',
+            message: 'Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi!'
+        }).then(() => {
+            this.router.navigate(['/']);
+        });
+    }
+
+    onMomoConfirmed() {
+        this.showMomoSimulation = false;
+        this.modalService.alert({
+            title: 'Thanh toán thành công',
+            message: 'Hệ thống đã ghi nhận thanh toán của bạn. Đơn hàng sẽ được xử lý sớm nhất!',
+            variant: 'success'
+        }).then(() => {
+            this.router.navigate(['/']);
+        });
+    }
+
+    onMomoCancelled() {
+        this.showMomoSimulation = false;
+        this.modalService.alert({
+            title: 'Thanh toán bị hủy',
+            message: 'Bạn đã hủy quá trình thanh toán MoMo. Đơn hàng của bạn vẫn đang ở trạng thái chờ.',
+            variant: 'warning'
+        }).then(() => {
+            this.router.navigate(['/orders']); // Navigate to my orders to see the pending order
         });
     }
 }
