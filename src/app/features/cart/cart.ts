@@ -33,10 +33,14 @@ export class CartComponent implements OnInit {
         });
     }
 
-    updateQuantity(productId: number, quantity: number): void {
-        if (quantity < 1) return;
-        this.cartService.updateQuantity(productId, quantity).subscribe(() => {
-            this.refreshCart();
+    updateQuantity(item: CartItemResponse, newQuantity: number): void {
+        if (newQuantity < 1 || newQuantity > item.productStock) return;
+        this.cartService.updateQuantity(item.productId, newQuantity).subscribe({
+            next: () => this.refreshCart(),
+            error: (err) => {
+                console.error('Error updating quantity:', err);
+                this.refreshCart();
+            }
         });
     }
 

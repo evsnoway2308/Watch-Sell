@@ -40,12 +40,13 @@
 
                     <div class="item-actions">
                         <div class="quantity-control">
-                            <button (click)="updateQuantity(item.productId, item.quantity - 1)"
-                                [disabled]="item.quantity <= 1" title="Giảm số lượng">
+                            <button (click)="updateQuantity(item, item.quantity - 1)" [disabled]="item.quantity <= 1"
+                                title="Giảm số lượng">
                                 <i class="fas fa-minus"></i>
                             </button>
                             <span>{{ item.quantity }}</span>
-                            <button (click)="updateQuantity(item.productId, item.quantity + 1)" title="Tăng số lượng">
+                            <button (click)="updateQuantity(item, item.quantity + 1)"
+                                [disabled]="item.quantity >= item.productStock" title="Tăng số lượng">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
