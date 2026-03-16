@@ -50,8 +50,19 @@ export class GoogleCallbackComponent implements OnInit, OnDestroy {
 
                     // Get user profile and redirect
                     this.userService.getMyProfile().subscribe({
-                        next: (user) => {
-                            this.toastr.success(`Chào mừng, ${user.fullName}!`);
+                        next: (res) => {
+                            // Handle response wrapper if present
+                            const user = res.result || res.data || res;
+                            const displayName = user.fullName || user.name || user.username || 'Người dùng';
+                            
+                            this.toastr.success(`Chào mừng, ${displayName}!`);
+
+                            if (typeof window !== 'undefined' && window.localStorage) {
+                                localStorage.setItem('user_name', displayName);
+                                if (user.avatar || user.avatarUrl) {
+                                    localStorage.setItem('user_avatar', user.avatar || user.avatarUrl);
+                                }
+                            }
 
                             if (user.role === 'ADMIN' || user.role === 'ROLE_ADMIN') {
                                 this.router.navigate(['/admin/dashboard']);

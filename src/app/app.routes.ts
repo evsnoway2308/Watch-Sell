@@ -40,7 +40,8 @@ export const routes: Routes = [
     path: 'admin',
     component: AdminLayoutComponent,
     children: [
-      { path: '', component: AdminDashboardComponent },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
+      { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'products', component: AdminProductListComponent },
       { path: 'products/new', component: AddProductComponent },
       { path: 'products/edit/:id', component: AddProductComponent },
