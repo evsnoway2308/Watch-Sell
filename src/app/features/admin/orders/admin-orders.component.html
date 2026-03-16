@@ -1,0 +1,51 @@
+<div class="admin-orders-container">
+    <div class="header">
+        <h1>Quản lý đơn hàng</h1>
+    </div>
+
+    <div *ngIf="loading" class="loading">Đang tải...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <div class="orders-table-wrapper" *ngIf="!loading && !error">
+        <table class="orders-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Khách hàng</th>
+                    <th>Ngày đặt</th>
+                    <th>Tổng tiền</th>
+                    <th>Phương thức TT</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let order of orders">
+                    <td>#{{ order.id }}</td>
+                    <td>
+                        <div class="user-info">
+                            <span class="username">{{ order.user.name }}</span>
+                            <span class="phone">{{ order.phoneNumber }}</span>
+                        </div>
+                    </td>
+                    <td>{{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td>{{ order.totalAmount | currency:'VND':'symbol':'1.0-0' }}</td>
+                    <td>{{ order.paymentMethod }}</td>
+                    <td>
+                        <span [className]="'status-badge ' + getStatusClass(order.status)">
+                            {{ order.status }}
+                        </span>
+                    </td>
+                    <td>
+                        <select [ngModel]="order.status" (ngModelChange)="updateStatus(order.id, $event)"
+                            class="status-select">
+                            <option *ngFor="let option of statusOptions" [value]="option">
+                                {{ option }}
+                            </option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

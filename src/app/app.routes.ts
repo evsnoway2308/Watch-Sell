@@ -16,6 +16,8 @@ import { ProfileComponent } from './features/profile/profile';
 import { CartComponent } from './features/cart/cart';
 import { CheckoutComponent } from './features/checkout/checkout';
 import { MainLayoutComponent } from './shared/layouts/main-layout/main-layout';
+import { OrderHistoryComponent } from './features/orders/order-history/order-history';
+import { AdminOrdersComponent } from './features/admin/orders/admin-orders.component';
 
 export const routes: Routes = [
   {
@@ -28,6 +30,7 @@ export const routes: Routes = [
       { path: 'products/:id', component: ProductDetailComponent },
       { path: 'products', component: ProductListComponent },
       { path: 'profile', component: ProfileComponent },
+      { path: 'orders', component: OrderHistoryComponent },
       { path: 'cart', component: CartComponent },
       { path: 'checkout', component: CheckoutComponent },
     ]
@@ -45,6 +48,7 @@ export const routes: Routes = [
       { path: 'categories/add', component: AddCategoryComponent },
       { path: 'categories/edit/:id', component: AddCategoryComponent },
       { path: 'users', component: AdminUserListComponent },
+      { path: 'orders', component: AdminOrdersComponent },
       // Future admin routes will go here
     ]
   }

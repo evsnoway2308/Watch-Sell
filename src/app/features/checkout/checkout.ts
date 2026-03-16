@@ -105,9 +105,15 @@ export class CheckoutComponent implements OnInit {
         this.orderService.createOrder(request).subscribe({
             next: (order) => {
                 this.isLoading = false;
+
+                let successMessage = 'Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi!';
+                if (formValue.paymentMethod === 'COD') {
+                    successMessage = 'Đơn hàng của bạn đã được đặt thành công! Bạn vui lòng thanh toán bằng tiền mặt khi nhận hàng nhé. Cảm ơn bạn!';
+                }
+
                 this.modalService.alert({
                     title: 'Đặt hàng thành công',
-                    message: 'Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi!'
+                    message: successMessage
                 }).then(() => {
                     this.router.navigate(['/']);
                 });

@@ -8,10 +8,16 @@ export interface OrderRequest {
 
 export interface OrderItem {
     id: number;
-    productName: string;
+    product: {
+        id: number;
+        name: string;
+        imageUrl: string;
+        price: number;
+    };
     quantity: number;
     price: number;
 }
+
 
 export interface Order {
     id: number;
@@ -19,5 +25,8 @@ export interface Order {
     totalAmount: number;
     status: string;
     shippingAddress: string;
+    phoneNumber?: string;
+    notes?: string;
+    paymentMethod?: string;
     orderItems: OrderItem[];
 }

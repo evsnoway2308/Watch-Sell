@@ -1,0 +1,79 @@
+<div class="order-history-container">
+    <div class="header-section">
+        <h1>Lịch sử đơn hàng</h1>
+        <p>Quản lý và theo dõi các đơn hàng bạn đã đặt</p>
+    </div>
+
+    <div *ngIf="isLoading" class="loading-state">
+        <div class="spinner"></div>
+        <p>Đang tải danh sách đơn hàng...</p>
+    </div>
+
+    <div *ngIf="!isLoading && orders.length === 0" class="empty-state">
+        <div class="empty-icon">
+            <i class="fas fa-box-open"></i>
+        </div>
+        <h3>Chưa có đơn hàng nào</h3>
+        <p>Bạn chưa đặt mua sản phẩm nào từ cửa hàng chúng tôi.</p>
+        <a routerLink="/products" class="btn-primary">Tiếp tục mua sắm</a>
+    </div>
+
+    <div *ngIf="!isLoading && orders.length > 0" class="orders-list">
+        <div *ngFor="let order of orders" class="order-card card">
+            <div class="order-header">
+                <div class="order-info">
+                    <span class="order-id">Mã đơn: #{{ order.id }}</span>
+                    <span class="order-date">{{ order.orderDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                </div>
+                <div class="order-status-badge {{ getStatusBadgeClass(order.status) }}">
+                    {{ getStatusDisplayName(order.status) }}
+                </div>
+            </div>
+
+            <div class="order-summary-row border-bottom">
+                <div class="summary-info">
+                    <span class="total-label">Tổng tiền:</span>
+                    <span class="total-amount">{{ order.totalAmount | number:'1.0-0' }}</span>
+                </div>
+            </div>
+
+            <div class="order-details-visible">
+
+                <div class="order-items">
+                    <div *ngFor="let item of order.orderItems" class="item-row">
+                        <div class="item-image" *ngIf="item.product.imageUrl">
+                            <img [src]="item.product.imageUrl" [alt]="item.product.name">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-name-row">
+                                <h4 class="item-name">{{ item.product.name }}</h4>
+                                <span class="item-price">{{ item.price | number:'1.0-0' }}</span>
+                            </div>
+                            <div class="item-meta-row">
+                                <span class="item-qty">Số lượng: {{ item.quantity }}</span>
+                                <span class="item-total">{{ (item.price * item.quantity) | number:'1.0-0' }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="shipping-details-grid">
+                    <div class="detail-group">
+                        <label><i class="fas fa-map-marker-alt"></i> ĐỊA CHỈ GIAO HÀNG</label>
+                        <p>{{ order.shippingAddress }}</p>
+                    </div>
+                    <div class="detail-group" *ngIf="order.phoneNumber">
+                        <label><i class="fas fa-phone-alt"></i> SỐ ĐIỆN THOẠI</label>
+                        <p>{{ order.phoneNumber }}</p>
+                    </div>
+                    <div class="detail-group" *ngIf="order.paymentMethod">
+                        <label><i class="fas fa-credit-card"></i> PHƯƠNG THỨC THANH TOÁN</label>
+                        <p>{{ order.paymentMethod === 'COD' ? 'Thanh toán khi nhận hàng (COD)' : order.paymentMethod }}</p>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
