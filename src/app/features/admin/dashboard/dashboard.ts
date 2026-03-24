@@ -89,7 +89,7 @@ import { DashboardStats } from '../../../core/model/dashboard-stats.model';
                     'success': order.status === 'DELIVERED' || order.status === 'PAID',
                     'warning': order.status === 'PENDING',
                     'danger': order.status === 'CANCELLED'
-                  }">{{ order.status }}</span>
+                  }">{{ getStatusDisplayName(order.status) }}</span>
                 </td>
                 <td>{{ order.totalAmount | number }} VNĐ</td>
               </tr>
@@ -299,5 +299,16 @@ export class AdminDashboardComponent implements OnInit {
       next: (data) => this.stats = data,
       error: (err) => console.error('Error fetching dashboard stats:', err)
     });
+  }
+
+  getStatusDisplayName(status: string): string {
+    switch (status?.toUpperCase()) {
+      case 'PENDING': return 'Đang xử lý';
+      case 'PAID': return 'Đã thanh toán';
+      case 'DELIVERED': return 'Đã giao hàng';
+      case 'CANCELLED': return 'Đã hủy';
+      case 'SHIPPING': return 'Đang giao hàng';
+      default: return status || 'Không xác định';
+    }
   }
 }
