@@ -6,12 +6,12 @@ import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { ModalService } from '../../core/services/modal.service';
 import { CartResponse } from '../../core/model/cart.model';
-import { MomoPaymentComponent } from './momo-payment/momo-payment.component';
+import { SepayPaymentComponent } from './sepay-payment/sepay-payment.component';
 
 @Component({
     selector: 'app-checkout',
     standalone: true,
-    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, MomoPaymentComponent],
+    imports: [CommonModule, FormsModule, ReactiveFormsModule, RouterModule, SepayPaymentComponent],
     templateUrl: './checkout.html',
     styleUrls: ['./checkout.css']
 })
@@ -21,7 +21,7 @@ export class CheckoutComponent implements OnInit {
     isLoading = false;
     directItem: any = null;
     
-    showMomoSimulation = false;
+    showSepayModal = false;
     createdOrder: any = null;
 
     constructor(
@@ -117,7 +117,7 @@ export class CheckoutComponent implements OnInit {
                 this.createdOrder = order;
 
                 if (formValue.paymentMethod === 'BANK_TRANSFER') {
-                    this.showMomoSimulation = true;
+                    this.showSepayModal = true;
                 } else {
                     this.handleOrderSuccess();
                 }
@@ -142,25 +142,14 @@ export class CheckoutComponent implements OnInit {
         });
     }
 
-    onMomoConfirmed() {
-        this.showMomoSimulation = false;
+    onSepayCancelled() {
+        this.showSepayModal = false;
         this.modalService.alert({
-            title: 'Thanh toán thành công',
-            message: 'Hệ thống đã ghi nhận thanh toán của bạn. Đơn hàng sẽ được xử lý sớm nhất!',
-            variant: 'success'
-        }).then(() => {
-            this.router.navigate(['/']);
-        });
-    }
-
-    onMomoCancelled() {
-        this.showMomoSimulation = false;
-        this.modalService.alert({
-            title: 'Thanh toán bị hủy',
-            message: 'Bạn đã hủy quá trình thanh toán MoMo. Đơn hàng của bạn vẫn đang ở trạng thái chờ.',
+            title: 'Thanh toán bị tạm dừng',
+            message: 'Đơn hàng của bạn đã được tạo nhưng chưa thanh toán. Trạng thái đơn hàng sẽ cập nhật tự động khi bạn chuyển khoản sau.',
             variant: 'warning'
         }).then(() => {
-            this.router.navigate(['/orders']); // Navigate to my orders to see the pending order
+            this.router.navigate(['/orders']); // Navigate to my orders
         });
     }
 }

@@ -29,4 +29,6 @@ export interface Order {
     notes?: string;
     paymentMethod?: string;
     orderItems: OrderItem[];
+    paymentRef?: string;
+    qrCodeUrl?: string;
 }

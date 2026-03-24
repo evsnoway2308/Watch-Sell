@@ -123,13 +123,10 @@
         <p>Đang tải thông tin đơn hàng...</p>
     </div>
 
-    <!-- MoMo Payment Simulation Modal -->
-    <app-momo-payment 
-        *ngIf="showMomoSimulation"
-        [orderId]="createdOrder?.id"
-        [amount]="calculateTotal()"
-        [qrImage]="'assets/images/momo-qr.png'"
-        (confirmed)="onMomoConfirmed()"
-        (cancelled)="onMomoCancelled()">
-    </app-momo-payment>
+    <!-- SePay Payment Modal -->
+    <app-sepay-payment 
+        *ngIf="showSepayModal"
+        [order]="createdOrder"
+        (cancelled)="onSepayCancelled()">
+    </app-sepay-payment>
 </div>
