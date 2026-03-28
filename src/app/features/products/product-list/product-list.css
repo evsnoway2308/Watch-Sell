@@ -39,8 +39,8 @@
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 3rem 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem 1.5rem;
     justify-content: center;
     max-width: 1200px;
     margin: 0 auto;
@@ -51,14 +51,26 @@
     display: flex;
     flex-direction: column;
     cursor: pointer;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+    border-color: #cbd5e1;
 }
 
 .product-image {
     position: relative;
-    aspect-ratio: 3/4;
+    aspect-ratio: 1/1;
     overflow: hidden;
     background-color: var(--bg-secondary);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .product-image img {
@@ -90,17 +102,25 @@
 
 .product-info {
     text-align: center;
+    padding: 0.8rem 1rem 1rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
 }
 
 .product-info .name {
     font-family: var(--font-serif);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.3rem;
     color: var(--text-main);
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    height: 2.8rem;
+    line-height: 1.4rem;
 }
 
 .product-info .category {
@@ -113,22 +133,22 @@
 }
 
 .product-info .price {
-    font-size: 1.05rem;
+    font-size: 1rem;
     color: var(--accent-gold);
     font-weight: 600;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.2rem;
 }
 
 .add-to-cart-btn {
     width: 100%;
-    padding: 0.8rem;
-    font-size: 0.8rem;
+    padding: 0.7rem;
+    font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 600;
     border-radius: 2px;
     transition: all 0.3s ease;
-    margin-top: 0.5rem;
+    margin-top: auto;
 }
 
 .add-to-cart-btn:hover:not(:disabled) {
