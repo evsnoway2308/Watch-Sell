@@ -4,7 +4,7 @@
   position: sticky;
   top: 0;
   z-index: 1000;
-  padding: 1rem 0;
+  padding: 0.75rem 0 0 0;
 }
 
 .header-container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; }
@@ -47,7 +47,7 @@
   border-top: 1px solid var(--border-light);
   border-bottom: 1px solid var(--border-light);
   padding: 0.5rem 0;
-  margin-top: 0.5rem;
+  margin-top: 0.25rem;
 }
 
 .category-container {
