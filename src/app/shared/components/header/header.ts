@@ -35,6 +35,14 @@ export class HeaderComponent implements OnInit {
         return upperRole === 'ADMIN' || upperRole === 'ROLE_ADMIN';
     }
 
+    onSearch(keyword: string) {
+        if (keyword.trim()) {
+            this.router.navigate(['/products'], { queryParams: { search: keyword.trim() } });
+        } else {
+            this.router.navigate(['/products']);
+        }
+    }
+
     constructor() {
         // Reactively upate user info when login state changes
         effect(() => {

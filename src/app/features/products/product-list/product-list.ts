@@ -29,14 +29,19 @@ export class ProductListComponent implements OnInit {
     totalElements: number = 0;
     isLoading: boolean = false;
     categoryId?: number;
+    searchKeyword?: string;
     categoryName: string = 'Sản phẩm';
 
     ngOnInit(): void {
         this.route.queryParams.subscribe(params => {
             this.categoryId = params['category'] !== undefined ? +params['category'] : undefined;
-            this.currentPage = 0; // Reset to first page when category changes
+            this.searchKeyword = params['search'] || undefined;
+            this.currentPage = 0; // Reset to first page when category or search changes
             this.loadProducts();
-            if (this.categoryId !== undefined && this.categoryId !== null) {
+            
+            if (this.searchKeyword) {
+                this.categoryName = `Kết quả tìm kiếm cho: "${this.searchKeyword}"`;
+            } else if (this.categoryId !== undefined && this.categoryId !== null) {
                 this.loadCategoryName();
             } else {
                 this.categoryName = 'Tất cả sản phẩm';
@@ -46,7 +51,7 @@ export class ProductListComponent implements OnInit {
 
     loadProducts(): void {
         this.isLoading = true;
-        this.productService.getProducts(this.currentPage, this.pageSize, this.categoryId).subscribe({
+        this.productService.getProducts(this.currentPage, this.pageSize, this.categoryId, this.searchKeyword).subscribe({
             next: (page: Page<ProductResponse>) => {
                 this.products = page.content;
                 this.totalPages = page.totalPages;

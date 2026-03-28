@@ -16,15 +16,19 @@ export class ProductService {
 
     constructor(private http: HttpClient) { }
 
-    getProducts(page: number = 0, size: number = 10, categoryId?: number): Observable<Page<ProductResponse>> {
+    getProducts(page: number = 0, size: number = 10, categoryId?: number, keyword?: string): Observable<Page<ProductResponse>> {
         let params = new HttpParams()
             .set('page', page.toString())
             .set('size', size.toString());
-
+    
         if (categoryId !== undefined && categoryId !== null) {
             params = params.set('categoryId', categoryId.toString());
         }
 
+        if (keyword) {
+            params = params.set('keyword', keyword);
+        }
+    
         return this.http.get<Page<ProductResponse>>(this.apiUrl, { params });
     }
 

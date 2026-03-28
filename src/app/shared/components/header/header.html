@@ -6,8 +6,8 @@
     </a>
     <!-- Search Bar -->
     <div class="search-bar">
-      <input type="text" placeholder="Tìm kiếm sản phẩm...">
-      <button><i class="fas fa-search"></i></button>
+      <input type="text" #searchInput placeholder="Tìm kiếm sản phẩm..." (keyup.enter)="onSearch(searchInput.value)">
+      <button (click)="onSearch(searchInput.value)"><i class="fas fa-search"></i></button>
     </div>
 
     <!-- Actions -->
