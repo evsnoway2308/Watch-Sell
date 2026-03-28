@@ -19,15 +19,15 @@
                     <div class="product-image">
                         <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name" loading="lazy">
                         <div *ngIf="!product.available || product.stock === 0" class="badge out-of-stock">Hết hàng</div>
-                        <div class="hover-overlay">
-                            <!-- Redundant link removed, whole card is now clickable -->
-                            <button class="btn-primary quick-add-btn" [disabled]="!product.available || product.stock === 0" (click)="addToCart($event, product)">Thêm vào giỏ</button>
-                        </div>
+                        <!-- Hover overlay removed as button is now permanent -->
                     </div>
                     <div class="product-info">
                         <h3 class="name" [title]="product.name">{{ product.name }}</h3>
                         <span class="category">{{ product.categoryName }}</span>
                         <div class="price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</div>
+                        <button class="btn-primary add-to-cart-btn" [disabled]="!product.available || product.stock === 0" (click)='addToCart($event, product)'>
+                            Thêm vào giỏ
+                        </button>
                     </div>
                 </div>
             </div>

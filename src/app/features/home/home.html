@@ -25,7 +25,7 @@
     <!-- Products Section -->
     <section class="products-section">
         <div class="section-header">
-            <h2>Bộ sưu tập nổi bật</h2>
+            <h2>Bộ sưu tập</h2>
         </div>
 
         <div *ngIf="isLoading" class="loading-state">
@@ -34,20 +34,21 @@
         </div>
 
         <div *ngIf="!isLoading && products.length > 0" class="product-grid">
-            <a *ngFor="let product of products" class="product-card" [routerLink]="['/products', product.id]">
+            <div *ngFor="let product of products" class="product-card" [routerLink]="['/products', product.id]">
                 <div class="product-image">
                     <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name" loading="lazy">
                     <div *ngIf="!product.available || product.stock === 0" class="badge out-of-stock">Hết hàng</div>
-                    <div class="hover-overlay">
-                        <span class="btn-outline quick-view-btn">Xem chi tiết</span>
-                    </div>
+                    <!-- Hover overlay removed as button is now permanent -->
                 </div>
                 <div class="product-info">
                     <h3 class="name">{{ product.name }}</h3>
                     <span class="category">{{ product.categoryName }}</span>
                     <div class="price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</div>
+                    <button class="btn-primary add-to-cart-btn" [disabled]="!product.available || product.stock === 0" (click)="addToCart($event, product)">
+                        Thêm vào giỏ
+                    </button>
                 </div>
-            </a>
+            </div>
         </div>
 
         <div class="explore-more">

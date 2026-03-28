@@ -4,6 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { ProductService } from '../../core/services/product.service';
 import { ProductResponse } from '../../core/model/product.model';
 import { Page } from '../../core/model/pagination.model';
+import { CartService } from '../../core/services/cart.service';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-home',
@@ -22,6 +24,8 @@ export class HomeComponent implements OnInit {
 
     constructor(
         private productService: ProductService,
+        private cartService: CartService,
+        private toastr: ToastrService,
         private router: Router
     ) { }
 
@@ -63,6 +67,25 @@ export class HomeComponent implements OnInit {
 
     navigateToProduct(id: number): void {
         this.router.navigate(['/products', id]);
+    }
+
+    addToCart(event: Event, product: ProductResponse): void {
+        event.preventDefault();
+        event.stopPropagation();
+
+        this.cartService.addToCart(product.id).subscribe({
+            next: () => {
+                this.toastr.success(`Đã thêm ${product.name} vào giỏ hàng!`, 'Thành công', {
+                    timeOut: 2000,
+                    progressBar: true,
+                    positionClass: 'toast-top-right'
+                });
+            },
+            error: (err: any) => {
+                console.error('Error adding to cart:', err);
+                this.toastr.error('Có lỗi xảy ra khi thêm vào giỏ hàng.');
+            }
+        });
     }
 }
 

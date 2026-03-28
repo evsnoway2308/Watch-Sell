@@ -113,6 +113,7 @@
     text-decoration: none;
     color: inherit;
     transition: transform 0.3s ease;
+    cursor: pointer;
 }
 
 .product-card:hover {
@@ -138,29 +139,7 @@
     transform: scale(1.05);
 }
 
-.hover-overlay {
-    position: absolute;
-    inset: 0;
-    background: rgba(18, 18, 18, 0.4);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-}
-
-.product-card:hover .hover-overlay {
-    opacity: 1;
-}
-
-.quick-view-btn {
-    transform: translateY(20px);
-    transition: all 0.4s ease;
-}
-
-.product-card:hover .quick-view-btn {
-    transform: translateY(0);
-}
+/* Hover state removed - button is now permanent */
 
 .badge {
     position: absolute;
@@ -201,6 +180,23 @@
     font-size: 1.1rem;
     color: var(--accent-gold);
     font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.add-to-cart-btn {
+    width: 100%;
+    padding: 0.8rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+    border-radius: 2px;
+    transition: all 0.3s ease;
+}
+
+.add-to-cart-btn:hover:not(:disabled) {
+    background-color: var(--accent-gold-hover);
+    transform: translateY(-2px);
 }
 
 .explore-more {
