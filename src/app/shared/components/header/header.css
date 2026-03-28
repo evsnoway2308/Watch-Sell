@@ -42,12 +42,65 @@
 .dropdown-item:hover { color: var(--accent-gold); background: rgba(255,255,255,0.02); padding-left: 25px;}
 .dropdown-divider { height: 1px; background: var(--border-light); margin: 0; }
 
-.category-nav { border-top: 1px solid var(--border-light); padding: 1rem 0; margin-top: 1rem; }
-.category-container { max-width: 1200px; margin: 0 auto; padding: 0 1.5rem; display: flex; align-items: center; justify-content: center; gap: 3rem; overflow-x: auto; scrollbar-width: none; }
-.category-container::-webkit-scrollbar { display: none; }
-.category-link { display: flex; align-items: center; gap: 0.5rem; color: var(--text-muted); text-decoration: none; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; transition: color 0.3s ease; }
-.category-link i { display: none; } /* Hide icons for minimalist look */
-.category-link:hover, .category-link.active { color: var(--accent-gold); }
+.category-nav {
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-light);
+  border-bottom: 1px solid var(--border-light);
+  padding: 0.5rem 0;
+  margin-top: 0.5rem;
+}
+
+.category-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3.5rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  padding: 0.75rem 0;
+  transition: all 0.3s ease;
+}
+
+.category-link i {
+  font-size: 0.9rem;
+  opacity: 0.7;
+}
+
+.category-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0px;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background: var(--accent-gold);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transform: translateX(-50%);
+}
+
+.category-link:hover, .category-link.active {
+  color: var(--text-main);
+}
+
+.category-link:hover::after, .category-link.active::after {
+  width: 100%;
+}
 
 .login-btn { padding: 8px 16px; border: 1px solid var(--border-light); border-radius: 2px; }
 .login-btn:hover { border-color: var(--accent-gold); color: var(--accent-gold); }
