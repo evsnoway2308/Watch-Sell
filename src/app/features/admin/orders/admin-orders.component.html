@@ -33,14 +33,14 @@
                     <td>{{ order.paymentMethod }}</td>
                     <td>
                         <span [className]="'status-badge ' + getStatusClass(order.status)">
-                            {{ order.status }}
+                            {{ getStatusLabel(order.status) }}
                         </span>
                     </td>
                     <td>
                         <select [ngModel]="order.status" (ngModelChange)="updateStatus(order.id, $event)"
                             class="status-select">
-                            <option *ngFor="let option of statusOptions" [value]="option">
-                                {{ option }}
+                            <option *ngFor="let option of statusOptions" [value]="option.value">
+                                {{ option.label }}
                             </option>
                         </select>
                     </td>

@@ -120,7 +120,7 @@ export class AdminUserListComponent implements OnInit {
         if (!role) return 'N/A';
         const r = role.toUpperCase();
         if (r.includes('ADMIN')) return 'Quản trị viên';
-        if (r.includes('SHOP_OWNER')) return 'Chủ cửa hàng';
+        if (r.includes('SHOP_OWNER')) return 'Quản trị viên';
         return 'Người dùng';
     }
 }

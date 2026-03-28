@@ -42,12 +42,12 @@
     font-size: clamp(3rem, 5vw, 4.5rem);
     line-height: 1.1;
     margin-bottom: 1.5rem;
-    color: var(--text-main);
+    color: #FFFFFF;
 }
 
 .banner-content p {
     font-size: 1.2rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.9);
     font-family: var(--font-sans);
     margin-bottom: 2.5rem;
     font-weight: 300;

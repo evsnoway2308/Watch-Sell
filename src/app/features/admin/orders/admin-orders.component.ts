@@ -17,7 +17,13 @@ export class AdminOrdersComponent implements OnInit {
     loading = false;
     error = '';
 
-    statusOptions = ['PENDING', 'SHIPPING', 'DELIVERED', 'CANCELLED'];
+    statusOptions = [
+        { value: 'PENDING', label: 'Chờ xử lý' },
+        { value: 'PAID', label: 'Đã thanh toán' },
+        { value: 'SHIPPING', label: 'Đang giao hàng' },
+        { value: 'DELIVERED', label: 'Đã giao hàng' },
+        { value: 'CANCELLED', label: 'Đã hủy' }
+    ];
 
     constructor(
         private adminOrderService: AdminOrderService,
@@ -62,12 +68,18 @@ export class AdminOrdersComponent implements OnInit {
     }
 
     getStatusClass(status: string): string {
-        switch (status) {
+        switch (status?.toUpperCase()) {
             case 'PENDING': return 'status-pending';
+            case 'PAID': return 'status-paid';
             case 'SHIPPING': return 'status-shipping';
             case 'DELIVERED': return 'status-delivered';
             case 'CANCELLED': return 'status-cancelled';
             default: return '';
         }
+    }
+
+    getStatusLabel(status: string): string {
+        const option = this.statusOptions.find(o => o.value === status?.toUpperCase());
+        return option ? option.label : (status || 'Không xác định');
     }
 }
