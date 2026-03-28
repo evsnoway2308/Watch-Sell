@@ -2,7 +2,7 @@
     <!-- Breadcrumbs -->
     <nav class="breadcrumb">
         <a routerLink="/">Trang chủ</a> /
-        <span class="category">{{ product.categoryName }}</span> /
+        <a routerLink="/products" class="category">{{ product.categoryName }}</a> /
         <span class="current">{{ product.name }}</span>
     </nav>
 
@@ -24,35 +24,51 @@
         <div class="info-section">
             <h1 class="product-title">{{ product.name }}</h1>
 
+            <div class="price-row">
+                <div class="price-tag">
+                    {{ product.price | currency:'VND':'symbol':'1.0-0' }}
+                </div>
+                <div class="status-badge" [class.in-stock]="product.available && product.stock > 0"
+                    [class.out-of-stock]="!product.available || product.stock === 0">
+                    {{ (product.available && product.stock > 0) ? 'Còn hàng' : 'Hết hàng' }}
+                </div>
+            </div>
+
             <div class="rating-summary">
                 <div class="stars">
                     <span *ngFor="let star of [1,2,3,4,5]" class="star"
-                        [class.filled]="star <= product.averageRating">★</span>
+                        [class.filled]="star <= (product.averageRating || 0)">★</span>
                 </div>
-                <span class="review-count">({{ product.reviewCount }} đánh giá)</span>
+                <span class="review-count">({{ product.reviewCount || 0 }} đánh giá)</span>
             </div>
 
-            <div class="price-tag">
-                {{ product.price | currency:'VND':'symbol':'1.0-0' }}
-            </div>
-
-            <div class="status-badge" [class.in-stock]="product.available && product.stock > 0"
-                [class.out-of-stock]="!product.available || product.stock === 0">
-                {{ (product.available && product.stock > 0) ? 'Còn hàng (' + product.stock + ')' : 'Hết hàng' }}
-            </div>
-
-            <div class="description">
+            <div class="product-specs">
                 <h3>Mô tả sản phẩm</h3>
                 <p class="desc-text">{{ product.description }}</p>
             </div>
 
             <div class="action-buttons">
-                <button class="btn-cart" [disabled]="!product.available || product.stock === 0" (click)="addToCart()">
+                <button class="btn-outline btn-cart" [disabled]="!product.available || product.stock === 0" (click)="addToCart()">
                     Thêm vào giỏ hàng
                 </button>
-                <button class="btn-buy" [disabled]="!product.available || product.stock === 0" (click)="buyNow()">
+                <button class="btn-primary btn-buy" [disabled]="!product.available || product.stock === 0" (click)="buyNow()">
                     Mua ngay
                 </button>
+            </div>
+
+            <div class="delivery-info">
+                <div class="info-item">
+                    <i class="fas fa-truck"></i>
+                    <span>Tận hưởng giao hàng miễn phí</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-undo"></i>
+                    <span>Chính sách đổi trả trong 30 ngày</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Bảo hành chính hãng 5 năm</span>
+                </div>
             </div>
         </div>
     </div>
@@ -61,10 +77,9 @@
 <ng-template #loadingOrError>
     <div class="status-container">
         <div *ngIf="isLoading" class="spinner"></div>
-        <p *ngIf="isLoading">Đang tải chi tiết sản phẩm...</p>
-        <div *ngIf="!isLoading && !product" class="error">
-            <p>Không tìm thấy sản phẩm hoặc có lỗi xảy ra.</p>
-            <a routerLink="/" class="btn-primary">Quay lại trang chủ</a>
+        <div *ngIf="!isLoading && !product" class="empty-state">
+            <p>Không tìm thấy sản phẩm. Vui lòng quay lại cửa hàng.</p>
+            <a routerLink="/products" class="btn-outline">Khám phá sản phẩm</a>
         </div>
     </div>
 </ng-template>

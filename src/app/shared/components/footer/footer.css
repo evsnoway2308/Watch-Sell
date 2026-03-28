@@ -1,0 +1,122 @@
+.footer {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  border-top: 1px solid var(--border-light);
+  padding: 5rem 0 0;
+  margin-top: auto;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  margin-bottom: 4rem;
+}
+
+.logo-text {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--text-main);
+}
+
+.logo-dot {
+  color: var(--accent-gold);
+}
+
+.brand-desc {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  margin-top: 1.5rem;
+  max-width: 90%;
+}
+
+.social-icons {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.social-icons a {
+  color: var(--text-muted);
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: var(--accent-gold);
+}
+
+.footer-column h3 {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 2rem;
+  color: var(--text-main);
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 1rem;
+}
+
+.footer-column a {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.95rem;
+  transition: color 0.3s ease;
+}
+
+.footer-column a:hover {
+  color: var(--accent-gold);
+}
+
+.payment-desc {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+.payment-icons {
+  display: flex;
+  gap: 1rem;
+  font-size: 2rem;
+  color: var(--text-muted);
+}
+
+.footer-bottom {
+  border-top: 1px solid var(--border-light);
+  padding: 2rem 0;
+  text-align: center;
+}
+
+.footer-bottom p {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 992px) {
+  .footer-container {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+}

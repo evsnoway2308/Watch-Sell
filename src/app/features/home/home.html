@@ -1,109 +1,84 @@
 <div class="home-container">
     <!-- Hero Banner Section -->
     <section class="hero-section">
-        <a routerLink="/products" class="hero-banner">
-            <img src="https://res.cloudinary.com/dm80gf6nc/image/upload/v1772437140/Pngtree_quartz_watch_promotion_season_atmospheric_1047997_ot9alk.jpg" alt="Luxury Watch Collection Banner" class="banner-img">
+        <div class="hero-banner">
+            <img src="https://res.cloudinary.com/dm80gf6nc/image/upload/v1772437140/Pngtree_quartz_watch_promotion_season_atmospheric_1047997_ot9alk.jpg" alt="Luxury Watch Collection" class="banner-img">
             <div class="banner-overlay">
                 <div class="banner-content">
-                    <h1>Luxury Collection 2026</h1>
-                    <p>Khám phá đẳng cấp thượng lưu trong từng nhịp đập</p>
-                    <span class="banner-btn">Khám phá ngay</span>
+                    <h1>Tuyệt tác vượt thời gian</h1>
+                    <p>Khám phá đẳng cấp thượng lưu trong từng chi tiết</p>
+                    <a routerLink="/products" class="btn-primary">Khám phá ngay</a>
                 </div>
             </div>
-        </a>
+        </div>
     </section>
 
-    <!-- Trust Section -->
-    <section class="trust-section">
-        <div class="trust-container">
-            <div class="trust-item">
-                <i class="fas fa-shipping-fast"></i>
-                <div class="trust-text">
-                    <h4>Giao Hàng Miễn Phí</h4>
-                    <p>Cho tất cả đơn hàng trên 2.000.000đ</p>
-                </div>
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-shield-alt"></i>
-                <div class="trust-text">
-                    <h4>Bảo Hành 5 Năm</h4>
-                    <p>Cam kết chất lượng chuẩn quốc tế</p>
-                </div>
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-undo"></i>
-                <div class="trust-text">
-                    <h4>30 Ngày Đổi Trả</h4>
-                    <p>Hoàn tiền 100% nếu không hài lòng</p>
-                </div>
-            </div>
-            <div class="trust-item">
-                <i class="fas fa-headset"></i>
-                <div class="trust-text">
-                    <h4>Hỗ Trợ 24/7</h4>
-                    <p>Đội ngũ tư vấn chuyên nghiệp</p>
-                </div>
-            </div>
+    <!-- Brand Story Section -->
+    <section class="brand-story-section">
+        <div class="story-container">
+            <h2>Hành Trình Chế Tác</h2>
+            <div class="divider"></div>
+            <p>Chúng tôi không chỉ bán đồng hồ, chúng tôi trao gửi những cỗ máy thời gian được chế tác thủ công tinh xảo nhất. Mỗi chiếc đồng hồ là một tác phẩm nghệ thuật, một di sản được lưu giữ cho thế hệ mai sau.</p>
         </div>
     </section>
 
     <!-- Products Section -->
     <section class="products-section">
         <div class="section-header">
-            <div class="divider"></div>
-            <h2>Sản phẩm nổi bật</h2>
+            <h2>Bộ sưu tập nổi bật</h2>
         </div>
 
         <div *ngIf="isLoading" class="loading-state">
             <div class="spinner"></div>
-            <p>Đang tải bộ sưu tập sản phẩm...</p>
+            <p>Đang tải bộ sưu tập...</p>
         </div>
 
         <div *ngIf="!isLoading && products.length > 0" class="product-grid">
             <a *ngFor="let product of products" class="product-card" [routerLink]="['/products', product.id]">
                 <div class="product-image">
-                    <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name"
-                        loading="lazy">
+                    <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name" loading="lazy">
                     <div *ngIf="!product.available || product.stock === 0" class="badge out-of-stock">Hết hàng</div>
+                    <div class="hover-overlay">
+                        <span class="btn-outline quick-view-btn">Xem chi tiết</span>
+                    </div>
                 </div>
                 <div class="product-info">
-                    <span class="category">{{ product.categoryName }}</span>
                     <h3 class="name">{{ product.name }}</h3>
-                    <div class="rating">
-                        <div class="stars">
-                            <i *ngFor="let star of [1,2,3,4,5]" class="star"
-                                [class.filled]="star <= (product.averageRating || 0)">★</i>
-                        </div>
-                        <span class="reviews" style="font-size: 0.75rem; color: #94a3b8;">({{ product.reviewCount || 0
-                            }})</span>
-                    </div>
-                    <div class="price-row">
-                        <span class="price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</span>
-                        <div class="view-btn">
-                            <i class="fas fa-arrow-right"></i>
-                        </div>
-                    </div>
+                    <span class="category">{{ product.categoryName }}</span>
+                    <div class="price">{{ product.price | currency:'VND':'symbol':'1.0-0' }}</div>
                 </div>
             </a>
         </div>
 
-        <!-- Pagination -->
-        <div *ngIf="totalPages > 1" class="pagination">
-            <button class="page-btn" [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">
-                <i class="fas fa-chevron-left"></i> &nbsp; Trước
-            </button>
+        <div class="explore-more">
+            <a routerLink="/products" class="btn-outline">Xem tất cả sản phẩm</a>
+        </div>
+    </section>
 
-            <div class="page-numbers">
-                <button *ngFor="let page of getPages()" class="page-number" [class.active]="page === currentPage"
-                    (click)="onPageChange(page)">
-                    {{ page + 1 }}
-                </button>
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="trust-container">
+            <div class="trust-item">
+                <i class="fas fa-gem"></i>
+                <div class="trust-text">
+                    <h4>Chất lượng chính hãng</h4>
+                    <p>Cam kết 100% Authentic</p>
+                </div>
             </div>
-
-            <button class="page-btn" [disabled]="currentPage === totalPages - 1"
-                (click)="onPageChange(currentPage + 1)">
-                Sau &nbsp; <i class="fas fa-chevron-right"></i>
-            </button>
+            <div class="trust-item">
+                <i class="fas fa-shield-alt"></i>
+                <div class="trust-text">
+                    <h4>Bảo hành quốc tế</h4>
+                    <p>Lên đến 5 năm</p>
+                </div>
+            </div>
+            <div class="trust-item">
+                <i class="fas fa-truck"></i>
+                <div class="trust-text">
+                    <h4>Giao hàng bảo mật</h4>
+                    <p>Miễn phí toàn quốc</p>
+                </div>
+            </div>
         </div>
     </section>
 </div>
