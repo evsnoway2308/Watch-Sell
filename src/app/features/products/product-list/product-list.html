@@ -15,12 +15,12 @@
             </div>
 
             <div *ngIf="!isLoading && products.length > 0" class="product-grid">
-                <div *ngFor="let product of products" class="product-card">
+                <div *ngFor="let product of products" class="product-card" [routerLink]="['/products', product.id]">
                     <div class="product-image">
                         <img [src]="product.imageUrl || 'assets/placeholder-product.png'" [alt]="product.name" loading="lazy">
                         <div *ngIf="!product.available || product.stock === 0" class="badge out-of-stock">Hết hàng</div>
                         <div class="hover-overlay">
-                            <a [routerLink]="['/products', product.id]" class="btn-outline quick-view-btn">Chi tiết</a>
+                            <!-- Redundant link removed, whole card is now clickable -->
                             <button class="btn-primary quick-add-btn" [disabled]="!product.available || product.stock === 0" (click)="addToCart($event, product)">Thêm vào giỏ</button>
                         </div>
                     </div>
