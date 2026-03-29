@@ -3,6 +3,12 @@ export interface OrderRequest {
     phoneNumber: string;
     notes: string;
     paymentMethod: string;
+    items?: OrderItemRequest[];
+}
+
+export interface OrderItemRequest {
+    productId: number;
+    quantity: number;
 }
 
 export interface OrderItem {
@@ -18,5 +24,16 @@ export interface Order {
     totalAmount: number;
     status: string;
     shippingAddress: string;
+    paymentMethod: string;
+    paymentRef?: string;
+    qrCodeUrl?: string;
     orderItems: OrderItem[];
+}
+
+export interface PaymentSession {
+    paymentRef: string;
+    qrCodeUrl: string;
+    amount: number;
+    status: string; // 'PENDING' | 'PAID' | 'EXPIRED'
+    expiresInSeconds: number;
 }

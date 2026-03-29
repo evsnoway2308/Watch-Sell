@@ -1,101 +1,223 @@
 <div class="checkout-container">
-    <div class="checkout-header">
-        <h1>Thanh toán</h1>
-        <nav>
-            <a routerLink="/cart">Giỏ hàng</a> / <span>Thanh toán</span>
-        </nav>
-    </div>
 
-    <div class="checkout-content" *ngIf="cart">
-        <div class="checkout-form-section">
-            <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
-                <div class="card premium-card">
-                    <h2>Thông tin giao hàng</h2>
-
-                    <div class="form-group">
-                        <label for="shippingAddress">Địa chỉ nhận hàng</label>
-                        <input type="text" id="shippingAddress" formControlName="shippingAddress"
-                            placeholder="Số nhà, tên đường, phường/xã...">
-                        <div class="error"
-                            *ngIf="checkoutForm.get('shippingAddress')?.touched && checkoutForm.get('shippingAddress')?.invalid">
-                            Vui lòng nhập địa chỉ giao hàng.
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="phoneNumber">Số điện thoại</label>
-                        <input type="text" id="phoneNumber" formControlName="phoneNumber"
-                            placeholder="Số điện thoại 10 chữ số">
-                        <div class="error"
-                            *ngIf="checkoutForm.get('phoneNumber')?.touched && checkoutForm.get('phoneNumber')?.invalid">
-                            Vui lòng nhập số điện thoại hợp lệ (10 chữ số).
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="notes">Ghi chú (tùy chọn)</label>
-                        <textarea id="notes" formControlName="notes" rows="3"
-                            placeholder="Ghi chú về đơn hàng, ví dụ: thời gian giao hàng..."></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Phương thức thanh toán</label>
-                        <div class="payment-methods">
-                            <label class="payment-option">
-                                <input type="radio" formControlName="paymentMethod" value="COD">
-                                <span class="radio-label">Thanh toán khi nhận hàng (COD)</span>
-                            </label>
-                            <label class="payment-option">
-                                <input type="radio" formControlName="paymentMethod" value="BANK_TRANSFER">
-                                <span class="radio-label">Chuyển khoản ngân hàng</span>
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn btn-primary btn-block" [disabled]="checkoutForm.invalid || isLoading">
-                    <span *ngIf="!isLoading">Xác nhận đặt hàng</span>
-                    <span *ngIf="isLoading" class="loader"></span>
-                </button>
-            </form>
+    <!-- ===== STEP 1: Checkout Form ===== -->
+    <ng-container *ngIf="qrPaymentStep === 'form'">
+        <div class="checkout-header">
+            <h1>Thanh toán</h1>
+            <nav>
+                <a routerLink="/cart">Giỏ hàng</a> / <span>Thanh toán</span>
+            </nav>
         </div>
 
-        <div class="checkout-summary-section">
-            <div class="card premium-card">
-                <h2>Tóm tắt đơn hàng</h2>
-                <div class="order-items">
-                    <div class="order-item" *ngFor="let item of cart.items">
-                        <div class="item-img">
-                            <img [src]="item.productImageUrl" [alt]="item.productName">
-                        </div>
-                        <div class="item-info">
-                            <h3>{{item.productName}}</h3>
-                            <p>Số lượng: {{item.quantity}}</p>
-                            <p class="price">{{item.productPrice | currency:'VND':'symbol':'1.0-0'}}</p>
-                        </div>
-                    </div>
-                </div>
+        <div class="checkout-content" *ngIf="cart">
+            <div class="checkout-form-section">
+                <form [formGroup]="checkoutForm" (ngSubmit)="onSubmit()">
+                    <div class="card premium-card">
+                        <h2>Thông tin giao hàng</h2>
 
-                <div class="summary-totals">
-                    <div class="summary-row">
-                        <span>Tạm tính:</span>
-                        <span>{{calculateTotal() | currency:'VND':'symbol':'1.0-0'}}</span>
+                        <div class="form-group">
+                            <label for="shippingAddress">Địa chỉ nhận hàng</label>
+                            <input type="text" id="shippingAddress" formControlName="shippingAddress"
+                                placeholder="Số nhà, tên đường, phường/xã...">
+                            <div class="error"
+                                *ngIf="checkoutForm.get('shippingAddress')?.touched && checkoutForm.get('shippingAddress')?.invalid">
+                                Vui lòng nhập địa chỉ giao hàng.
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phoneNumber">Số điện thoại</label>
+                            <input type="text" id="phoneNumber" formControlName="phoneNumber"
+                                placeholder="Số điện thoại 10 chữ số">
+                            <div class="error"
+                                *ngIf="checkoutForm.get('phoneNumber')?.touched && checkoutForm.get('phoneNumber')?.invalid">
+                                Vui lòng nhập số điện thoại hợp lệ (10 chữ số).
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">Ghi chú (tùy chọn)</label>
+                            <textarea id="notes" formControlName="notes" rows="3"
+                                placeholder="Ghi chú về đơn hàng, ví dụ: thời gian giao hàng..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phương thức thanh toán</label>
+                            <div class="payment-methods">
+                                <label class="payment-option" [class.selected]="selectedPaymentMethod === 'COD'">
+                                    <input type="radio" formControlName="paymentMethod" value="COD">
+                                    <div class="payment-option-content">
+                                        <span class="payment-icon">🚚</span>
+                                        <div>
+                                            <span class="radio-label">Thanh toán khi nhận hàng (COD)</span>
+                                            <small>Trả tiền khi nhận được hàng</small>
+                                        </div>
+                                    </div>
+                                </label>
+                                <label class="payment-option" [class.selected]="selectedPaymentMethod === 'BANK_TRANSFER'">
+                                    <input type="radio" formControlName="paymentMethod" value="BANK_TRANSFER">
+                                    <div class="payment-option-content">
+                                        <span class="payment-icon">📱</span>
+                                        <div>
+                                            <span class="radio-label">Thanh toán QR / Chuyển khoản</span>
+                                            <small>Quét mã QR để thanh toán ngay</small>
+                                        </div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="summary-row">
-                        <span>Phí vận chuyển:</span>
-                        <span>Miễn phí</span>
+
+                    <button type="submit" class="btn btn-primary btn-block" [disabled]="checkoutForm.invalid || isLoading"
+                        id="btn-checkout-submit">
+                        <span *ngIf="!isLoading && selectedPaymentMethod === 'COD'">✅ Xác nhận đặt hàng (COD)</span>
+                        <span *ngIf="!isLoading && selectedPaymentMethod === 'BANK_TRANSFER'">📱 Tạo mã QR thanh toán</span>
+                        <span *ngIf="isLoading" class="loader"></span>
+                    </button>
+                </form>
+            </div>
+
+            <div class="checkout-summary-section">
+                <div class="card premium-card">
+                    <h2>Tóm tắt đơn hàng</h2>
+                    <div class="order-items">
+                        <div class="order-item" *ngFor="let item of cart.items">
+                            <div class="item-img">
+                                <img [src]="item.productImageUrl" [alt]="item.productName">
+                            </div>
+                            <div class="item-info">
+                                <h3>{{item.productName}}</h3>
+                                <p>Số lượng: {{item.quantity}}</p>
+                                <p class="price">{{item.productPrice | currency:'VND':'symbol':'1.0-0'}}</p>
+                            </div>
+                        </div>
                     </div>
-                    <hr>
-                    <div class="summary-row total">
-                        <span>Tổng cộng:</span>
-                        <span>{{calculateTotal() | currency:'VND':'symbol':'1.0-0'}}</span>
+
+                    <div class="summary-totals">
+                        <div class="summary-row">
+                            <span>Tạm tính:</span>
+                            <span>{{calculateTotal() | currency:'VND':'symbol':'1.0-0'}}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Phí vận chuyển:</span>
+                            <span>Miễn phí</span>
+                        </div>
+                        <hr>
+                        <div class="summary-row total">
+                            <span>Tổng cộng:</span>
+                            <span>{{calculateTotal() | currency:'VND':'symbol':'1.0-0'}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div *ngIf="!cart && !isLoading" class="empty-state">
-        <p>Đang tải thông tin đơn hàng...</p>
-    </div>
+        <div *ngIf="!cart && !isLoading" class="empty-state">
+            <p>Đang tải thông tin đơn hàng...</p>
+        </div>
+    </ng-container>
+
+    <!-- ===== STEP 2: QR Payment Screen ===== -->
+    <ng-container *ngIf="qrPaymentStep === 'qr' && paymentSession">
+        <div class="qr-payment-wrapper">
+            <div class="qr-payment-card">
+                <div class="qr-header">
+                    <h1>📱 Quét mã QR để thanh toán</h1>
+                    <p>Mở ứng dụng ngân hàng và quét mã QR bên dưới</p>
+                </div>
+
+                <div class="qr-body">
+                    <div class="qr-image-wrapper">
+                        <img [src]="paymentSession.qrCodeUrl" alt="QR Code thanh toán" class="qr-code-img">
+                        <div class="qr-checking-overlay" *ngIf="qrCheckingStatus">
+                            <span class="pulse-dot"></span>
+                            <span>Đang kiểm tra...</span>
+                        </div>
+                    </div>
+
+                    <div class="qr-info">
+                        <div class="info-row">
+                            <span class="info-label">Số tiền:</span>
+                            <span class="info-value amount-highlight">
+                                {{paymentSession.amount | currency:'VND':'symbol':'1.0-0'}}
+                            </span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Mã đơn hàng:</span>
+                            <span class="info-value ref-code">{{paymentSession.paymentRef}}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="info-label">Ngân hàng:</span>
+                            <span class="info-value">BIDV - NGUYEN DUC KHANH</span>
+                        </div>
+                    </div>
+
+                    <div class="qr-instructions">
+                        <h3>Hướng dẫn:</h3>
+                        <ol>
+                            <li>Mở app ngân hàng và chọn <strong>Quét QR</strong></li>
+                            <li>Quét mã QR ở trên</li>
+                            <li>Kiểm tra số tiền <strong>{{paymentSession.amount | currency:'VND':'symbol':'1.0-0'}}</strong></li>
+                            <li>Nội dung chuyển khoản: <strong>{{paymentSession.paymentRef}}</strong></li>
+                            <li>Xác nhận chuyển khoản</li>
+                        </ol>
+                        <div class="warning-box">
+                            ⚠️ <strong>Lưu ý:</strong> Đơn hàng chỉ được tạo sau khi hệ thống xác nhận thanh toán thành công.
+                        </div>
+                    </div>
+
+                    <div class="qr-status-row">
+                        <div class="status-indicator" [class.pending]="paymentSession.status === 'PENDING'"
+                            [class.paid]="paymentSession.status === 'PAID'">
+                            <span class="status-dot"></span>
+                            <span *ngIf="paymentSession.status === 'PENDING'">Đang chờ thanh toán...</span>
+                            <span *ngIf="paymentSession.status === 'PAID'">✅ Đã thanh toán</span>
+                        </div>
+                        <div class="countdown" [class.urgent]="qrCountdown < 120">
+                            ⏱ Hết hạn sau: <strong>{{countdownDisplay}}</strong>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-outline btn-block" (click)="cancelQrPayment()" id="btn-cancel-qr">
+                        ← Quay lại chỉnh sửa đơn hàng
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
+    <!-- ===== STEP 3: Payment Success Screen ===== -->
+    <ng-container *ngIf="qrPaymentStep === 'success'">
+        <div class="success-wrapper">
+            <div class="success-card">
+                <div class="success-animation">
+                    <div class="checkmark-circle">
+                        <span class="checkmark">✓</span>
+                    </div>
+                </div>
+                <h1>Thanh toán thành công! 🎉</h1>
+                <p>Hệ thống đã xác nhận thanh toán của bạn.</p>
+                <p>Đơn hàng đã được tạo và đang được xử lý.</p>
+
+                <div class="success-info" *ngIf="paymentSession">
+                    <div class="info-row">
+                        <span>Mã tham chiếu:</span>
+                        <strong>{{paymentSession.paymentRef}}</strong>
+                    </div>
+                    <div class="info-row">
+                        <span>Số tiền:</span>
+                        <strong>{{paymentSession.amount | currency:'VND':'symbol':'1.0-0'}}</strong>
+                    </div>
+                </div>
+
+                <div class="success-actions">
+                    <button class="btn btn-primary" (click)="goToOrders()" id="btn-view-orders">
+                        Xem đơn hàng của tôi
+                    </button>
+                    <a routerLink="/" class="btn btn-outline">Tiếp tục mua sắm</a>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+
 </div>
