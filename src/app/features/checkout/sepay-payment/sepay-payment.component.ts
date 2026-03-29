@@ -99,10 +99,10 @@ import { PaymentSession } from '../../../core/model/order.model';
     .sepay-overlay {
         position: fixed;
         top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(15, 23, 42, 0.9);
+        background: rgba(255, 255, 255, 0.95);
         display: flex; justify-content: center; align-items: center;
         z-index: 10000;
-        backdrop-filter: blur(12px);
+        backdrop-filter: blur(8px);
     }
     .sepay-modal {
         background: #ffffff;
@@ -110,7 +110,8 @@ import { PaymentSession } from '../../../core/model/order.model';
         max-width: 850px;
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.1);
+        border: 1px solid #e2e8f0;
         animation: modalFadeUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         color: #1e293b;
     }
@@ -119,14 +120,14 @@ import { PaymentSession } from '../../../core/model/order.model';
         to { transform: translateY(0); opacity: 1; }
     }
     .sepay-header {
-        background: #1e293b;
-        color: white;
+        background: #ffffff;
+        color: #1e293b;
         padding: 32px 40px;
         text-align: left;
-        border-bottom: 1px solid rgba(255,255,255,0.05);
+        border-bottom: 1px solid #e2e8f0;
     }
-    .sepay-header h2 { margin: 0; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
-    .order-ref { margin: 8px 0 0; color: #94a3b8; font-size: 0.9rem; font-family: monospace; }
+    .sepay-header h2 { margin: 0; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; color: #1e293b; }
+    .order-ref { margin: 8px 0 0; color: #64748b; font-size: 0.9rem; font-family: monospace; }
     
     .sepay-body { padding: 40px; }
     .sepay-split-container { display: flex; gap: 4rem; }

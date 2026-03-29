@@ -29,6 +29,8 @@ export interface Order {
     totalAmount: number;
     status: string;
     shippingAddress: string;
+    phoneNumber: string;
+    notes?: string;
     paymentMethod: string;
     paymentRef?: string;
     qrCodeUrl?: string;
