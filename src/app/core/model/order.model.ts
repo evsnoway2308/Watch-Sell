@@ -3,7 +3,12 @@ export interface OrderRequest {
     phoneNumber: string;
     notes: string;
     paymentMethod: string;
-    items?: { productId: number; quantity: number }[];
+    items?: OrderItemRequest[];
+}
+
+export interface OrderItemRequest {
+    productId: number;
+    quantity: number;
 }
 
 export interface OrderItem {
@@ -24,22 +29,16 @@ export interface Order {
     totalAmount: number;
     status: string;
     shippingAddress: string;
-    phoneNumber?: string;
-    notes?: string;
-    paymentMethod?: string;
+    paymentMethod: string;
     paymentRef?: string;
     qrCodeUrl?: string;
     orderItems: OrderItem[];
 }
 
-/**
- * Dùng cho initiateQrPayment / checkPaymentStatus (nếu cần trong tương lai).
- * Hiện tại flow dùng SepayPaymentComponent + getOrderById.
- */
 export interface PaymentSession {
     paymentRef: string;
     qrCodeUrl: string;
     amount: number;
-    status: string;
+    status: string; // 'PENDING' | 'PAID' | 'EXPIRED'
     expiresInSeconds: number;
 }

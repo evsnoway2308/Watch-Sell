@@ -20,9 +20,8 @@ export class OrderService {
     }
 
     /**
-     * Khởi tạo phiên thanh toán QR.
-     * KHÔNG tạo đơn hàng - trả về QR URL và paymentRef.
-     * Khi thanh toán thành công mới tạo đơn + trừ kho.
+     * Initiate a QR payment session.
+     * Does NOT create order - returns QR URL and paymentRef for polling.
      */
     initiateQrPayment(orderRequest: OrderRequest, totalAmount: number): Observable<PaymentSession> {
         return this.http.post<PaymentSession>(`${this.apiUrl}/initiate-qr-payment`, {
@@ -32,8 +31,7 @@ export class OrderService {
     }
 
     /**
-     * Kiểm tra trạng thái thanh toán QR.
-     * Frontend poll mỗi 5 giây. Khi status = PAID → thành công.
+     * Poll payment status by paymentRef.
      */
     checkPaymentStatus(paymentRef: string): Observable<PaymentSession> {
         return this.http.get<PaymentSession>(`${this.apiUrl}/check-payment/${paymentRef}`);
@@ -41,9 +39,5 @@ export class OrderService {
 
     getMyOrders(): Observable<Order[]> {
         return this.http.get<Order[]>(`${this.apiUrl}/my-orders`);
-    }
-
-    getOrderById(id: number): Observable<Order> {
-        return this.http.get<Order>(`${this.apiUrl}/${id}`);
     }
 }
