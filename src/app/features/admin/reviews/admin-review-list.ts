@@ -80,7 +80,7 @@ export class AdminReviewListComponent implements OnInit, OnDestroy {
     async deleteReview(id: number): Promise<void> {
         const confirmed = await this.modalService.confirm({
             title: 'Xóa đánh giá',
-            message: 'Bạn có chắc chắn muốn xóa đánh giá này không? Khách hàng có thể sẽ không thích điều này!',
+            message: 'Bạn có chắc chắn muốn xóa đánh giá này không?',
             confirmText: 'Xóa',
             cancelText: 'Hủy'
         });
