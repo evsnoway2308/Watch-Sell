@@ -1,0 +1,81 @@
+<div class="admin-review-container">
+    <div class="page-header">
+        <h1 class="page-title">Quản lý Đánh giá sản phẩm</h1>
+    </div>
+
+    <div class="table-container card">
+        <div *ngIf="isLoading" class="loading-overlay">
+            <div class="spinner"></div>
+        </div>
+
+        <table class="review-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Khách hàng</th>
+                    <th>Sản phẩm</th>
+                    <th>Đánh giá</th>
+                    <th>Bình luận</th>
+                    <th>Thời gian</th>
+                    <th class="text-right">Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let review of reviews">
+                    <td>#{{ review.id }}</td>
+                    <td>
+                        <div class="user-cell">
+                            <img *ngIf="review.userAvatar" [src]="review.userAvatar" class="user-avatar" alt="Avatar">
+                            <i *ngIf="!review.userAvatar" class="fas fa-user-circle user-icon-fallback"></i>
+                            <span class="user-name"><b>{{ review.userName }}</b></span>
+                        </div>
+                    </td>
+                    <td>
+                        <a *ngIf="review.productId" [routerLink]="['/products', review.productId]" class="product-link" target="_blank">
+                            {{ review.productName || 'Đồng hồ #'+review.productId }}
+                        </a>
+                        <span *ngIf="!review.productId" style="color: #94a3b8">Sản phẩm đã xóa</span>
+                    </td>
+                    <td>
+                        <div class="star-rating">
+                            <i *ngFor="let star of getStarArray(5); let i = index" 
+                               class="fa-star" [class.fas]="i < review.rating" [class.far]="i >= review.rating"></i>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="comment-text">{{ review.comment }}</div>
+                    </td>
+                    <td>
+                        <div class="date-text">{{ review.reviewDate | date:'dd/MM/yyyy HH:mm' }}</div>
+                    </td>
+                    <td class="text-right">
+                        <button class="action-btn delete" (click)="deleteReview(review.id)" title="Xóa đánh giá này">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="!isLoading && reviews.length === 0">
+                    <td colspan="7" class="empty-msg">Chưa có đánh giá nào trong hệ thống.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination-container" *ngIf="totalPages > 1">
+            <div class="pagination-info">
+                Hiển thị trang {{ currentPage + 1 }} / {{ totalPages }}
+            </div>
+            <div class="pagination-controls">
+                <button class="page-btn" [disabled]="currentPage === 0" (click)="onPageChange(currentPage - 1)">Trước</button>
+                <div class="page-numbers">
+                    <button *ngFor="let page of getPages()" class="page-number" 
+                        [class.active]="page === currentPage"
+                        (click)="onPageChange(page)">
+                        {{ page + 1 }}
+                    </button>
+                </div>
+                <button class="page-btn" [disabled]="currentPage === totalPages - 1" (click)="onPageChange(currentPage + 1)">Sau</button>
+            </div>
+        </div>
+    </div>
+</div>

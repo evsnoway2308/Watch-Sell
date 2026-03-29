@@ -18,6 +18,7 @@ import { CheckoutComponent } from './features/checkout/checkout';
 import { MainLayoutComponent } from './shared/layouts/main-layout/main-layout';
 import { OrderHistoryComponent } from './features/orders/order-history/order-history';
 import { AdminOrdersComponent } from './features/admin/orders/admin-orders.component';
+import { AdminReviewListComponent } from './features/admin/reviews/admin-review-list';
 
 export const routes: Routes = [
   {
@@ -50,7 +51,7 @@ export const routes: Routes = [
       { path: 'categories/edit/:id', component: AddCategoryComponent },
       { path: 'users', component: AdminUserListComponent },
       { path: 'orders', component: AdminOrdersComponent },
-      // Future admin routes will go here
+      { path: 'reviews', component: AdminReviewListComponent },
     ]
   }
 ];
