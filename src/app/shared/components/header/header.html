@@ -28,8 +28,8 @@
           <div class="user-info-link">
             <div class="avatar-container">
               <!-- Avatar placeholder if no avatar -->
-              <i class="fas fa-user-circle" *ngIf="!user()?.avatar" style="font-size: 32px; color: #94a3b8;"></i>
-              <img [src]="user()?.avatar" *ngIf="user()?.avatar" alt="Avatar" class="user-avatar-img">
+              <i class="fas fa-user-circle" *ngIf="!(user()?.avatarUrl || user()?.avatar)" style="font-size: 32px; color: #94a3b8;"></i>
+              <img [src]="user()?.avatarUrl || user()?.avatar" *ngIf="user()?.avatarUrl || user()?.avatar" alt="Avatar" class="user-avatar-img">
             </div>
             <div class="user-details-box">
               <span class="member-badge">{{ getRoleDisplayName(user()?.role) }}</span>
