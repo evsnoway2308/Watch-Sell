@@ -9,12 +9,16 @@
     <div class="filter-bar card">
         <div class="search-box">
             <span class="search-icon">🔍</span>
-            <input type="text" placeholder="Tìm kiếm theo tên sản phẩm...">
+            <input type="text" placeholder="Tìm kiếm theo tên sản phẩm..."
+                   [ngModel]="searchKeyword"
+                   (ngModelChange)="onSearchChange($event)">
         </div>
         <div class="filter-actions">
-            <select class="form-select">
+            <select class="form-select" [ngModel]="selectedCategory" (ngModelChange)="onCategoryChange($event)">
                 <option value="">Tất cả danh mục</option>
-                <!-- Categories will be dynamic -->
+                <option *ngFor="let cat of categories" [value]="cat.id">
+                    {{ cat.name }}
+                </option>
             </select>
         </div>
     </div>

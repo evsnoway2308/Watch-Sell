@@ -99,7 +99,8 @@ export class ProductListComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Error adding to cart:', err);
-                this.toastr.error('Có lỗi xảy ra khi thêm vào giỏ hàng.');
+                const msg = err.error?.message || 'Có lỗi xảy ra khi thêm vào giỏ hàng.';
+                this.toastr.error(msg);
             }
         });
     }

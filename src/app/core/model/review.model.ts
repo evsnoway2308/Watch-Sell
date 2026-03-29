@@ -5,6 +5,8 @@ export interface ReviewResponse {
     reviewDate: string;
     userName: string;
     userAvatar: string;
+    productId?: number;
+    productName?: string;
 }
 
 export interface ReviewRequest {

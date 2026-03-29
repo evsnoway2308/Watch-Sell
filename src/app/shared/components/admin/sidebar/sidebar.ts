@@ -42,6 +42,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
               <span class="icon">📁</span> Danh mục
             </a>
           </li>
+          <li>
+            <a routerLink="/admin/reviews" routerLinkActive="active">
+              <span class="icon">💬</span> Đánh giá
+            </a>
+          </li>
         </ul>
       </nav>
       
