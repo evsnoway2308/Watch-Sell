@@ -30,7 +30,7 @@
                 </div>
                 <div class="status-badge" [class.in-stock]="product.available && product.stock > 0"
                     [class.out-of-stock]="!product.available || product.stock === 0">
-                    {{ (product.available && product.stock > 0) ? 'Còn hàng' : 'Hết hàng' }}
+                    {{ (product.available && product.stock > 0) ? 'Còn ' + product.stock + ' sản phẩm' : 'Hết hàng' }}
                 </div>
             </div>
 

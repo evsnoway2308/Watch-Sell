@@ -26,7 +26,7 @@ export class UserService {
   }
 
   updateProfile(data: any) {
-    return this.http.put<any>(`${this.apiUrl}/profile/update`, data);
+    return this.http.put(`${this.apiUrl}/profile/update`, data, { responseType: 'text' });
   }
 
   changePassword(data: any) {

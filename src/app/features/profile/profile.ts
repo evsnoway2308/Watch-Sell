@@ -70,19 +70,23 @@ export class ProfileComponent implements OnInit {
             ? null : { mismatch: true };
     }
 
-    onUpdateProfile(): void {
+    onUpdateProfile(showToast: boolean = true): void {
         if (this.profileForm.invalid) return;
 
         this.isSubmitting = true;
         this.userService.updateProfile(this.profileForm.value).subscribe({
             next: () => {
-                this.toastr.success('Cập nhật hồ sơ thành công');
+                if (showToast) {
+                    this.toastr.success('Cập nhật hồ sơ thành công');
+                }
                 this.isSubmitting = false;
                 this.loadProfile();
             },
             error: (err) => {
                 console.error('Error updating profile:', err);
-                this.toastr.error('Lỗi khi cập nhật hồ sơ');
+                if (showToast) {
+                    this.toastr.error('Lỗi khi cập nhật hồ sơ');
+                }
                 this.isSubmitting = false;
             }
         });
@@ -115,7 +119,7 @@ export class ProfileComponent implements OnInit {
                     this.profileForm.patchValue({ avatarUrl: res.url });
                     this.toastr.success('Tải ảnh lên thành công');
                     // Optionally save immediately
-                    this.onUpdateProfile();
+                    this.onUpdateProfile(false);
                 },
                 error: (err) => {
                     console.error('Error uploading avatar:', err);
