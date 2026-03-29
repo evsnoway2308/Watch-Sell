@@ -8,11 +8,14 @@ import { ModalService } from '../../../core/services/modal.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { ReviewService } from '../../../core/services/review.service';
+import { ReviewResponse, ReviewRequest } from '../../../core/model/review.model';
 
 @Component({
     selector: 'app-product-detail',
     standalone: true,
-    imports: [CommonModule, RouterLink],
+    imports: [CommonModule, RouterLink, FormsModule],
     templateUrl: './product-detail.html',
     styleUrl: './product-detail.css'
 })
@@ -22,6 +25,11 @@ export class ProductDetailComponent implements OnInit {
     isLoading = true;
     selectedQuantity = 1;
 
+    reviews: ReviewResponse[] = [];
+    newReview: ReviewRequest = { rating: 5, comment: '' };
+    hoveredRating: number = 0;
+    isReviewSubmitting = false;
+
     constructor(
         private route: ActivatedRoute,
         private productService: ProductService,
@@ -29,13 +37,15 @@ export class ProductDetailComponent implements OnInit {
         private modalService: ModalService,
         private toastr: ToastrService,
         private router: Router,
-        private authService: AuthService
+        public authService: AuthService,
+        private reviewService: ReviewService
     ) { }
 
     ngOnInit(): void {
         const id = this.route.snapshot.paramMap.get('id');
         if (id) {
             this.loadProduct(+id);
+            this.loadReviews(+id);
         }
     }
 
@@ -125,6 +135,57 @@ export class ProductDetailComponent implements OnInit {
                     ...this.product,
                     selectedQuantity: this.selectedQuantity
                 }
+            }
+        });
+    }
+
+    loadReviews(productId: number): void {
+        this.reviewService.getReviewsByProduct(productId).subscribe({
+            next: (data) => {
+                this.reviews = data;
+            },
+            error: (err) => {
+                console.error('Error loading reviews:', err);
+            }
+        });
+    }
+
+    setRating(star: number): void {
+        this.newReview.rating = star;
+    }
+
+    setHoveredRating(star: number): void {
+        this.hoveredRating = star;
+    }
+
+    submitReview(): void {
+        if (!this.product) return;
+
+        if (!this.authService.isLoggedIn()) {
+            this.toastr.warning('Vui lòng đăng nhập để đánh giá sản phẩm.', 'Thông báo');
+            this.router.navigate(['/login'], { queryParams: { returnUrl: this.router.url } });
+            return;
+        }
+
+        if (!this.newReview.comment || this.newReview.comment.trim() === '') {
+            this.toastr.warning('Vui lòng nhập nội dung đánh giá.', 'Thông báo');
+            return;
+        }
+
+        this.isReviewSubmitting = true;
+        this.reviewService.addReview(this.product.id, this.newReview).subscribe({
+            next: (review) => {
+                this.toastr.success('Phản hồi của bạn đã được gửi.', 'Thành công');
+                this.newReview = { rating: 5, comment: '' };
+                this.hoveredRating = 0;
+                this.isReviewSubmitting = false;
+                this.loadReviews(this.product!.id);
+            },
+            error: (err) => {
+                console.error('Error submitting review:', err);
+                const msg = err.error?.message || 'Có lỗi xảy ra khi gửi đánh giá.';
+                this.toastr.error(msg, 'Lỗi');
+                this.isReviewSubmitting = false;
             }
         });
     }

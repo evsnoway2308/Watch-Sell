@@ -72,6 +72,66 @@
             </div>
         </div>
     </div>
+
+    <!-- Product Reviews Section -->
+    <div class="reviews-section">
+        <h2 class="reviews-title">Đánh giá sản phẩm</h2>
+
+        <!-- Review Form -->
+        <div class="review-form-container">
+            <h3>Để lại đánh giá của bạn</h3>
+            <div class="star-rating-input">
+                <span *ngFor="let star of [1,2,3,4,5]" 
+                      class="star-icon" 
+                      [class.active]="star <= (hoveredRating || newReview.rating)"
+                      (mouseenter)="setHoveredRating(star)"
+                      (mouseleave)="setHoveredRating(0)"
+                      (click)="setRating(star)">★</span>
+            </div>
+            
+            <div class="form-group" *ngIf="authService.isLoggedIn()">
+                <textarea [(ngModel)]="newReview.comment" rows="4" placeholder="Nhận xét của bạn về sản phẩm này..."></textarea>
+                <div class="form-actions">
+                    <button class="btn-submit" [disabled]="isReviewSubmitting" (click)="submitReview()">
+                        <i class="fas fa-paper-plane" *ngIf="!isReviewSubmitting"></i>
+                        {{ isReviewSubmitting ? 'Đang gửi...' : 'Gửi đánh giá' }}
+                    </button>
+                </div>
+            </div>
+            
+            <div class="login-prompt" *ngIf="!authService.isLoggedIn()">
+                <p>Vui lòng <a routerLink="/login">đăng nhập</a> để đánh giá sản phẩm.</p>
+            </div>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-list">
+            <h3 class="list-title">Danh sách đánh giá ({{ reviews.length }})</h3>
+            
+            <div class="no-reviews" *ngIf="reviews.length === 0">
+                <p>Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên đánh giá!</p>
+            </div>
+            
+            <div class="review-items">
+                <div class="review-item" *ngFor="let review of reviews">
+                    <div class="review-avatar">
+                        <img [src]="review.userAvatar || 'assets/placeholder-avatar.png'" alt="Avatar">
+                    </div>
+                    <div class="review-content">
+                        <div class="review-header">
+                            <span class="reviewer-name">{{ review.userName }}</span>
+                            <span class="review-date">{{ review.reviewDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                        </div>
+                        <div class="review-stars-display">
+                            <span *ngFor="let star of [1,2,3,4,5]" class="star-icon-small"
+                                  [class.filled]="star <= review.rating">★</span>
+                        </div>
+                        <p class="review-comment">{{ review.comment }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <ng-template #loadingOrError>

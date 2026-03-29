@@ -36,6 +36,7 @@
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    white-space: nowrap;
 }
 
 .orders-table td {
@@ -43,6 +44,7 @@
     border-bottom: 1px solid #e2e8f0;
     color: #334155;
     vertical-align: middle;
+    white-space: nowrap;
 }
 
 .orders-table tr:hover {
@@ -70,6 +72,7 @@
     font-size: 12px;
     font-weight: 600;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .status-pending {
