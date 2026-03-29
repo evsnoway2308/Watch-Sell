@@ -115,7 +115,7 @@ export class ProductDetailComponent implements OnInit {
             },
             error: (err) => {
                 console.error('Error adding to cart:', err);
-                this.toastr.error('Có lỗi xảy ra khi thêm vào giỏ hàng. Vui lòng thử lại.');
+                this.toastr.error('Số lượng bạn chọn đã đạt mức tối đa của sản phẩm này.');
             }
         });
     }
