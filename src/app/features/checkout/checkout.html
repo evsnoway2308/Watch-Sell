@@ -126,7 +126,8 @@
     <!-- SePay Payment Modal -->
     <app-sepay-payment 
         *ngIf="showSepayModal"
-        [order]="createdOrder"
-        (cancelled)="onSepayCancelled()">
+        [paymentSession]="paymentSession"
+        (cancelled)="onSepayCancelled()"
+        (paymentSuccess)="onPaymentSuccess()">
     </app-sepay-payment>
 </div>

@@ -6,6 +6,7 @@ import { CartService } from '../../core/services/cart.service';
 import { OrderService } from '../../core/services/order.service';
 import { ModalService } from '../../core/services/modal.service';
 import { CartResponse } from '../../core/model/cart.model';
+import { PaymentSession } from '../../core/model/order.model';
 import { SepayPaymentComponent } from './sepay-payment/sepay-payment.component';
 
 @Component({
@@ -20,9 +21,10 @@ export class CheckoutComponent implements OnInit {
     cart: CartResponse | null = null;
     isLoading = false;
     directItem: any = null;
-    
+
+    // QR Payment state
     showSepayModal = false;
-    createdOrder: any = null;
+    paymentSession: PaymentSession | null = null;
 
     constructor(
         private fb: FormBuilder,
@@ -52,14 +54,14 @@ export class CheckoutComponent implements OnInit {
 
     loadCart(): void {
         this.cartService.getCart().subscribe({
-            next: (cart) => {
+            next: (cart: CartResponse) => {
                 this.cart = cart;
                 if (!cart || cart.items.length === 0) {
                     this.router.navigate(['/cart']);
                 }
             },
-            error: (err) => {
-                console.error('Error loading cart for checkout:', err);
+            error: (err: any) => {
+                console.error('Error loading cart:', err);
             }
         });
     }
@@ -74,19 +76,15 @@ export class CheckoutComponent implements OnInit {
 
     onQuantityChange(productId: number, newQuantity: number): void {
         if (newQuantity < 1) return;
-
         this.cartService.updateQuantity(productId, newQuantity).subscribe({
-            next: () => {
-                this.loadCart();
-            },
-            error: (err) => {
-                console.error('Error updating quantity in checkout:', err);
+            next: () => this.loadCart(),
+            error: (err: any) => {
+                console.error('Error updating quantity:', err);
                 this.modalService.alert({
                     title: 'Lỗi',
                     message: 'Có lỗi xảy ra khi cập nhật số lượng.',
                     variant: 'danger'
                 });
-
             }
         });
     }
@@ -95,9 +93,10 @@ export class CheckoutComponent implements OnInit {
         if (this.checkoutForm.invalid) return;
         if (!this.directItem && (!this.cart || this.cart.items.length === 0)) return;
 
-        this.isLoading = true;
         const formValue = this.checkoutForm.value;
-        const request: any = {
+
+        // Xây dựng order request
+        const orderRequest: any = {
             shippingAddress: formValue.shippingAddress,
             phoneNumber: formValue.phoneNumber,
             notes: formValue.notes,
@@ -105,51 +104,89 @@ export class CheckoutComponent implements OnInit {
         };
 
         if (this.directItem) {
-            request.items = [{
+            orderRequest.items = [{
                 productId: this.directItem.id,
                 quantity: this.directItem.selectedQuantity || 1
             }];
         }
 
-        this.orderService.createOrder(request).subscribe({
-            next: (order: any) => {
-                this.isLoading = false;
-                this.createdOrder = order;
+        if (formValue.paymentMethod === 'BANK_TRANSFER') {
+            // QR flow: tạo PaymentSession, chưa tạo đơn hàng
+            this.initiateQrPayment(orderRequest);
+        } else {
+            // COD flow: tạo đơn hàng ngay
+            this.createCodOrder(orderRequest);
+        }
+    }
 
-                if (formValue.paymentMethod === 'BANK_TRANSFER') {
-                    this.showSepayModal = true;
-                } else {
-                    this.handleOrderSuccess();
-                }
+    private initiateQrPayment(orderRequest: any): void {
+        this.isLoading = true;
+        const totalAmount = this.calculateTotal();
+
+        this.orderService.initiateQrPayment(orderRequest, totalAmount).subscribe({
+            next: (session: PaymentSession) => {
+                this.isLoading = false;
+                this.paymentSession = session;
+                this.showSepayModal = true; // Hiện modal QR
             },
             error: (err: any) => {
                 this.isLoading = false;
-                console.error('Error creating order:', err);
+                console.error('Error initiating QR payment:', err);
                 this.modalService.alert({
-                    title: 'Lỗi đặt hàng',
-                    message: 'Có lỗi xảy ra khi đặt hàng. Vui lòng kiểm tra lại thông tin và thử lại.'
+                    title: 'Lỗi',
+                    message: 'Không thể khởi tạo thanh toán QR. Vui lòng thử lại.',
+                    variant: 'danger'
                 });
             }
         });
     }
 
-    handleOrderSuccess() {
-        this.modalService.alert({
-            title: 'Đặt hàng thành công',
-            message: 'Cảm ơn bạn đã tin tưởng và mua sắm tại cửa hàng của chúng tôi!'
-        }).then(() => {
-            this.router.navigate(['/']);
+    private createCodOrder(orderRequest: any): void {
+        this.isLoading = true;
+
+        this.orderService.createOrder(orderRequest).subscribe({
+            next: (order: any) => {
+                this.isLoading = false;
+                this.modalService.alert({
+                    title: 'Đặt hàng thành công! 🎉',
+                    message: 'Cảm ơn bạn đã mua hàng! Chúng tôi sẽ liên hệ sớm nhất.'
+                }).then(() => {
+                    this.router.navigate(['/profile'], { queryParams: { tab: 'orders' } });
+                });
+            },
+            error: (err: any) => {
+                this.isLoading = false;
+                console.error('Error creating COD order:', err);
+                this.modalService.alert({
+                    title: 'Lỗi đặt hàng',
+                    message: 'Có lỗi xảy ra. Vui lòng thử lại.',
+                    variant: 'danger'
+                });
+            }
         });
     }
 
-    onSepayCancelled() {
+    /**
+     * Người dùng đóng modal QR / huỷ thanh toán.
+     * Không có đơn hàng nào được tạo → quay về giỏ hàng.
+     */
+    onSepayCancelled(): void {
         this.showSepayModal = false;
+        this.paymentSession = null;
         this.modalService.alert({
-            title: 'Thanh toán bị tạm dừng',
-            message: 'Đơn hàng của bạn đã được tạo nhưng chưa thanh toán. Trạng thái đơn hàng sẽ cập nhật tự động khi bạn chuyển khoản sau.',
+            title: 'Đã huỷ thanh toán',
+            message: 'Bạn đã huỷ thanh toán. Đơn hàng chưa được tạo. Giỏ hàng của bạn vẫn còn nguyên.',
             variant: 'warning'
         }).then(() => {
-            this.router.navigate(['/profile'], { queryParams: { tab: 'orders' } });
+            this.router.navigate(['/cart']); // Quay về giỏ hàng
         });
+    }
+
+    /**
+     * Thanh toán thành công - gọi từ SepayPaymentComponent.
+     */
+    onPaymentSuccess(): void {
+        this.showSepayModal = false;
+        this.paymentSession = null;
     }
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Order, OrderRequest } from '../model/order.model';
+import { Order, OrderRequest, PaymentSession } from '../model/order.model';
 import { environment } from '../../../environment/environment';
 
 @Injectable({
@@ -13,24 +13,37 @@ export class OrderService {
     constructor(private http: HttpClient) { }
 
     /**
-     * Tạo đơn hàng.
-     * - COD: order.status = PENDING, không có qrCodeUrl
-     * - BANK_TRANSFER: order.status = PENDING, có qrCodeUrl + paymentRef
-     *   → SepayPaymentComponent sẽ hiển thị QR và poll getOrderById mỗi 5s
+     * Tạo đơn hàng COD ngay lập tức.
      */
     createOrder(request: OrderRequest): Observable<Order> {
         return this.http.post<Order>(this.apiUrl, request);
     }
 
     /**
-     * Lấy thông tin đơn hàng theo ID.
-     * Dùng bởi SepayPaymentComponent để polling trạng thái thanh toán.
+     * Khởi tạo phiên thanh toán QR.
+     * KHÔNG tạo đơn hàng - trả về QR URL và paymentRef.
+     * Khi thanh toán thành công mới tạo đơn + trừ kho.
      */
-    getOrderById(id: number): Observable<Order> {
-        return this.http.get<Order>(`${this.apiUrl}/${id}`);
+    initiateQrPayment(orderRequest: OrderRequest, totalAmount: number): Observable<PaymentSession> {
+        return this.http.post<PaymentSession>(`${this.apiUrl}/initiate-qr-payment`, {
+            orderRequest,
+            totalAmount
+        });
+    }
+
+    /**
+     * Kiểm tra trạng thái thanh toán QR.
+     * Frontend poll mỗi 5 giây. Khi status = PAID → thành công.
+     */
+    checkPaymentStatus(paymentRef: string): Observable<PaymentSession> {
+        return this.http.get<PaymentSession>(`${this.apiUrl}/check-payment/${paymentRef}`);
     }
 
     getMyOrders(): Observable<Order[]> {
         return this.http.get<Order[]>(`${this.apiUrl}/my-orders`);
+    }
+
+    getOrderById(id: number): Observable<Order> {
+        return this.http.get<Order>(`${this.apiUrl}/${id}`);
     }
 }
