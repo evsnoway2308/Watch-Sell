@@ -18,7 +18,6 @@ export interface OrderItem {
     price: number;
 }
 
-
 export interface Order {
     id: number;
     orderDate: string;
@@ -28,7 +27,19 @@ export interface Order {
     phoneNumber?: string;
     notes?: string;
     paymentMethod?: string;
-    orderItems: OrderItem[];
     paymentRef?: string;
     qrCodeUrl?: string;
+    orderItems: OrderItem[];
+}
+
+/**
+ * Dùng cho initiateQrPayment / checkPaymentStatus (nếu cần trong tương lai).
+ * Hiện tại flow dùng SepayPaymentComponent + getOrderById.
+ */
+export interface PaymentSession {
+    paymentRef: string;
+    qrCodeUrl: string;
+    amount: number;
+    status: string;
+    expiresInSeconds: number;
 }

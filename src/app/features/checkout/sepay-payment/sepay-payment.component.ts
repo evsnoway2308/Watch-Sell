@@ -234,25 +234,31 @@ export class SepayPaymentComponent implements OnInit, OnDestroy {
     }
 
     startPolling() {
+        // Kiểm tra ngay lần đầu khi mở modal
+        if (this.order && this.order.id) {
+            this.checkOrderStatus();
+        }
         this.pollingInterval = setInterval(() => {
             if (this.order && this.order.id) {
                 this.checkOrderStatus();
             }
-        }, 5000); // Mức khoảng 5 giây mỗi lần
+        }, 5000);
     }
 
     stopPolling() {
         if (this.pollingInterval) {
             clearInterval(this.pollingInterval);
+            this.pollingInterval = null;
         }
     }
 
     checkOrderStatus() {
-        if (!this.order) return;
+        if (!this.order || this.orderStatus === 'PAID') return; // Dừng nếu đã PAID
         this.orderService.getOrderById(this.order.id).subscribe({
             next: (order) => {
                 this.orderStatus = order.status;
                 if (order.status === 'PAID') {
+                    this.stopPolling(); // Dừng polling ngay khi phát hiện PAID
                     this.handlePaymentSuccess();
                 }
             },
@@ -263,13 +269,12 @@ export class SepayPaymentComponent implements OnInit, OnDestroy {
     }
 
     handlePaymentSuccess() {
-        this.stopPolling();
         this.modalService.alert({
-            title: 'Thanh toán thành công!',
-            message: 'Hệ thống đã nhận được thanh toán. Xin chúc mừng. Đơn hàng của bạn đang được xử lý!',
+            title: '✅ Thanh toán thành công!',
+            message: 'Hệ thống đã xác nhận thanh toán. Đơn hàng của bạn đang được xử lý!',
             variant: 'success'
         }).then(() => {
-            this.router.navigate(['/']);
+            this.router.navigate(['/profile'], { queryParams: { tab: 'orders' } });
         });
     }
 

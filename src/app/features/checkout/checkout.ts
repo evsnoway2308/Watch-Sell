@@ -149,7 +149,7 @@ export class CheckoutComponent implements OnInit {
             message: 'Đơn hàng của bạn đã được tạo nhưng chưa thanh toán. Trạng thái đơn hàng sẽ cập nhật tự động khi bạn chuyển khoản sau.',
             variant: 'warning'
         }).then(() => {
-            this.router.navigate(['/orders']); // Navigate to my orders
+            this.router.navigate(['/profile'], { queryParams: { tab: 'orders' } });
         });
     }
 }

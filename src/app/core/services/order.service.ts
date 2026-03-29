@@ -12,15 +12,25 @@ export class OrderService {
 
     constructor(private http: HttpClient) { }
 
+    /**
+     * Tạo đơn hàng.
+     * - COD: order.status = PENDING, không có qrCodeUrl
+     * - BANK_TRANSFER: order.status = PENDING, có qrCodeUrl + paymentRef
+     *   → SepayPaymentComponent sẽ hiển thị QR và poll getOrderById mỗi 5s
+     */
     createOrder(request: OrderRequest): Observable<Order> {
         return this.http.post<Order>(this.apiUrl, request);
     }
 
-    getMyOrders(): Observable<Order[]> {
-        return this.http.get<Order[]>(`${this.apiUrl}/my-orders`);
-    }
-
+    /**
+     * Lấy thông tin đơn hàng theo ID.
+     * Dùng bởi SepayPaymentComponent để polling trạng thái thanh toán.
+     */
     getOrderById(id: number): Observable<Order> {
         return this.http.get<Order>(`${this.apiUrl}/${id}`);
+    }
+
+    getMyOrders(): Observable<Order[]> {
+        return this.http.get<Order[]>(`${this.apiUrl}/my-orders`);
     }
 }
