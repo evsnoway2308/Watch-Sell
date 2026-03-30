@@ -175,7 +175,7 @@ export class CheckoutComponent implements OnInit {
         this.paymentSession = null;
         this.modalService.alert({
             title: 'Đã huỷ thanh toán',
-            message: 'Bạn đã huỷ thanh toán. Đơn hàng chưa được tạo. Giỏ hàng của bạn vẫn còn nguyên.',
+            message: 'Bạn đã huỷ thanh toán. Đơn hàng chưa được tạo',
             variant: 'warning'
         }).then(() => {
             this.router.navigate(['/cart']); // Quay về giỏ hàng
